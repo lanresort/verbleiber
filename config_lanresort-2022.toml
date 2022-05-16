@@ -1,0 +1,17 @@
+sounds_path = "sounds"
+
+[user_sounds]
+"0000000001" = "hallo-yogi.ogg"
+
+[whereabouts_sounds]
+present = [
+    "na-endlich.ogg",
+    "willkommen-zurueck.ogg",
+]
+away = [
+    "auf-wiedersehen.ogg",
+    "bis-bald.ogg",
+]
+asleep = [
+    "gute-nacht-schlaf-schoen.ogg",
+]
