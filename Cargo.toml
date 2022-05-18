@@ -1,5 +1,5 @@
 [package]
-name = "orga-whereabouts"
+name = "verbleiber"
 version = "0.1.0-dev"
 authors = ["Jochen Kupperschmidt"]
 edition = "2021"

@@ -1,10 +1,10 @@
-# Orga Whereabouts
+# Verbleiber
 
 
 ## Usage
 
 ```sh
-$ orga-whereabouts -c config.toml -i /dev/input/event23
+$ verbleiber -c config.toml -i /dev/input/event23
 ```
 
 
@@ -18,9 +18,9 @@ features in `Cargo.toml` and require recompilation of the program.
 
 ## License
 
-Orga Whereabouts is licensed under the MIT license.
+Verbleiber is licensed under the MIT license.
 
 
 ## Author
 
-Orga Whereabouts was created by Jochen Kupperschmidt.
+Verbleiber was created by Jochen Kupperschmidt.
