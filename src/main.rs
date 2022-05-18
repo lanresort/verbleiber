@@ -16,7 +16,7 @@ mod config;
 
 // TODO: Replace `.unwrap()` with `?` in threads.
 
-type UserTagId = String;
+type UserId = String;
 
 #[derive(Debug)]
 enum WhereaboutsType {
@@ -26,7 +26,7 @@ enum WhereaboutsType {
 }
 
 enum Input {
-    User(UserTagId),
+    User(UserId),
     Whereabouts(WhereaboutsType),
 }
 
@@ -154,42 +154,59 @@ fn main() -> Result<()> {
         }
     });
 
-    let mut user_tag_id: Option<UserTagId> = None;
+    let mut current_user_id: Option<UserId> = None;
 
     for msg in rx.iter() {
         match msg {
             Input::User(tag_id) => {
                 println!("User tag ID: {tag_id}");
 
-                if let Some(filename) = config.user_sounds.get(&tag_id) {
-                    player.play(&filename)?;
-                }
+                if let Some(user_id) = config.tags_to_user_ids.get(&tag_id) {
+                    if let Some(filename) = config.user_sounds.get(user_id) {
+                        player.play(filename)?;
+                    }
 
-                println!("Awaiting whereabouts for user {tag_id} ...");
-                user_tag_id = Some(tag_id);
+                    println!("Awaiting whereabouts for user {user_id} ...");
+                    current_user_id = Some(user_id.to_string());
+                }
             }
             Input::Whereabouts(t) => {
                 println!("Whereabouts: {t:?}");
 
-                match user_tag_id {
-                    Some(tag_id) => {
-                        println!("Submitting whereabouts ({t:?}) for user {tag_id}.");
+                match current_user_id {
+                    Some(user_id) => {
+                        println!("Submitting whereabouts ({t:?}) for user {user_id}.");
 
-                        let key = match t {
+                        let whereabouts_key = match t {
                             WhereaboutsType::Present => "present",
                             WhereaboutsType::Away => "away",
                             WhereaboutsType::Asleep => "asleep",
                         };
 
-                        if let Some(filenames) = config.whereabouts_sounds.get(key) {
-                            let random_index = rng.generate_range(0..filenames.len());
-                            let filename = &filenames[random_index];
-                            player.play(&filename)?;
+                        let whereabouts_id = match t {
+                            WhereaboutsType::Present => "2ace4e57-e083-490b-ad10-3d214666db57",
+                            WhereaboutsType::Away => "568d4a1e-5af0-43cd-8249-832ffc387e4d",
+                            WhereaboutsType::Asleep => "92f92f15-fbc1-4e77-bd75-65186f9e4a4d",
+                        };
+
+                        let authz_value = format!("Bearer {}", config.api_token);
+                        let response = ureq::post(&config.api_url)
+                            .set("Authorization", &authz_value)
+                            .send_json(ureq::json!({"user_id": &user_id, "whereabouts_id": whereabouts_id}));
+                        match response {
+                            Ok(_) => println!("Request successfully submitted."),
+                            Err(e) => println!("Request failed.\n{e}"),
                         }
 
-                        user_tag_id = None; // reset
+                        if let Some(filenames) = config.whereabouts_sounds.get(whereabouts_key) {
+                            let random_index = rng.generate_range(0..filenames.len());
+                            let filename = &filenames[random_index];
+                            player.play(filename)?;
+                        }
+
+                        current_user_id = None; // reset
                     }
-                    None => (), // ignore
+                    None => (), // Ignore if no user has been specified.
                 }
             }
         }

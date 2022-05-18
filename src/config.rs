@@ -11,7 +11,10 @@ use std::path::{Path, PathBuf};
 
 #[derive(Deserialize)]
 pub(crate) struct Config {
+    pub api_token: String,
+    pub api_url: String,
     pub sounds_path: PathBuf,
+    pub tags_to_user_ids: HashMap<String, String>,
     pub user_sounds: HashMap<String, String>,
     pub whereabouts_sounds: HashMap<String, Vec<String>>,
 }

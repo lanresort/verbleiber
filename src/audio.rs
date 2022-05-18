@@ -16,10 +16,7 @@ pub(crate) struct Player<'a> {
 
 impl<'a> Player<'a> {
     pub fn new(dir: PathBuf, sink: &Sink) -> Player {
-        Player {
-            dir: dir,
-            sink: sink,
-        }
+        Player { dir, sink }
     }
 
     pub fn play(&self, filename: &str) -> Result<()> {

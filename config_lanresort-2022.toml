@@ -1,7 +1,12 @@
+api_token = "__redacted__"
+api_url = "https://byceps.example/api/v1/whereabouts/set_status"
 sounds_path = "sounds"
 
+[tags_to_user_ids]
+"0000000001" = "ff4d72e5-f0c5-4097-b09d-5e5b634eb353"  # yogi
+
 [user_sounds]
-"0000000001" = "hallo-yogi.ogg"
+"ff4d72e5-f0c5-4097-b09d-5e5b634eb353" = "hallo-yogi.ogg"
 
 [whereabouts_sounds]
 present = [
