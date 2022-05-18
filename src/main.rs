@@ -183,25 +183,24 @@ fn main() -> Result<()> {
                             WhereaboutsType::Asleep => "asleep",
                         };
 
-                        let whereabouts_id = match t {
-                            WhereaboutsType::Present => "2ace4e57-e083-490b-ad10-3d214666db57",
-                            WhereaboutsType::Away => "568d4a1e-5af0-43cd-8249-832ffc387e4d",
-                            WhereaboutsType::Asleep => "92f92f15-fbc1-4e77-bd75-65186f9e4a4d",
-                        };
-
-                        let authz_value = format!("Bearer {}", config.api_token);
-                        let response = ureq::post(&config.api_url)
+                        if let Some(whereabouts_id) =
+                            &config.whereabouts_keys_to_ids.get(whereabouts_key)
+                        {
+                            let authz_value = format!("Bearer {}", config.api_token);
+                            let response = ureq::post(&config.api_url)
                             .set("Authorization", &authz_value)
                             .send_json(ureq::json!({"user_id": &user_id, "whereabouts_id": whereabouts_id}));
-                        match response {
-                            Ok(_) => println!("Request successfully submitted."),
-                            Err(e) => println!("Request failed.\n{e}"),
-                        }
+                            match response {
+                                Ok(_) => println!("Request successfully submitted."),
+                                Err(e) => println!("Request failed.\n{e}"),
+                            }
 
-                        if let Some(filenames) = config.whereabouts_sounds.get(whereabouts_key) {
-                            let random_index = rng.generate_range(0..filenames.len());
-                            let filename = &filenames[random_index];
-                            player.play(filename)?;
+                            if let Some(filenames) = config.whereabouts_sounds.get(whereabouts_key)
+                            {
+                                let random_index = rng.generate_range(0..filenames.len());
+                                let filename = &filenames[random_index];
+                                player.play(filename)?;
+                            }
                         }
 
                         current_user_id = None; // reset
