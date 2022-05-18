@@ -4,7 +4,7 @@
 ## Usage
 
 ```sh
-$ verbleiber -c config.toml -i /dev/input/event23
+$ verbleiber -c config.toml -r /dev/input/event23 -b /dev/input/event42
 ```
 
 
