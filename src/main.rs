@@ -10,6 +10,7 @@ use nanorand::{Rng, WyRand};
 use rodio::{OutputStream, Sink};
 use std::process::exit;
 use std::thread;
+mod api;
 mod audio;
 mod cli;
 mod config;
@@ -186,10 +187,12 @@ fn main() -> Result<()> {
                         if let Some(whereabouts_id) =
                             &config.whereabouts_keys_to_ids.get(whereabouts_key)
                         {
-                            let authz_value = format!("Bearer {}", config.api_token);
-                            let response = ureq::post(&config.api_url)
-                            .set("Authorization", &authz_value)
-                            .send_json(ureq::json!({"user_id": &user_id, "whereabouts_id": whereabouts_id}));
+                            let response = api::update_status(
+                                &config.api_url,
+                                &config.api_token,
+                                &user_id,
+                                whereabouts_id,
+                            );
                             match response {
                                 Ok(_) => println!("Request successfully submitted."),
                                 Err(e) => println!("Request failed.\n{e}"),
