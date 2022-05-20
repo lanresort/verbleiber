@@ -19,16 +19,9 @@ mod config;
 
 type UserId = String;
 
-#[derive(Debug)]
-enum WhereaboutsType {
-    Present,
-    Away,
-    Asleep,
-}
-
 enum Input {
     User(UserId),
-    Whereabouts(WhereaboutsType),
+    Button(String),
 }
 
 fn get_char(key: Key) -> Option<char> {
@@ -139,15 +132,16 @@ fn main() -> Result<()> {
 
                 match event.kind() {
                     InputEventKind::Key(Key::BTN_TOP) => {
-                        tx2.send(Input::Whereabouts(WhereaboutsType::Present))
-                            .unwrap();
+                        tx2.send(Input::Button("button1".to_string())).unwrap();
                     }
                     InputEventKind::Key(Key::BTN_TRIGGER) => {
-                        tx2.send(Input::Whereabouts(WhereaboutsType::Away)).unwrap();
+                        tx2.send(Input::Button("button2".to_string())).unwrap();
                     }
                     InputEventKind::Key(Key::BTN_THUMB2) => {
-                        tx2.send(Input::Whereabouts(WhereaboutsType::Asleep))
-                            .unwrap();
+                        tx2.send(Input::Button("button3".to_string())).unwrap();
+                    }
+                    InputEventKind::Key(Key::BTN_THUMB) => {
+                        tx2.send(Input::Button("button4".to_string())).unwrap();
                     }
                     _ => (),
                 }
@@ -171,22 +165,16 @@ fn main() -> Result<()> {
                     current_user_id = Some(user_id.to_string());
                 }
             }
-            Input::Whereabouts(t) => {
-                println!("Whereabouts: {t:?}");
+            Input::Button(button_name) => {
+                println!("Button pressed: {button_name}");
 
                 match current_user_id {
                     Some(user_id) => {
-                        println!("Submitting whereabouts ({t:?}) for user {user_id}.");
-
-                        let whereabouts_key = match t {
-                            WhereaboutsType::Present => "present",
-                            WhereaboutsType::Away => "away",
-                            WhereaboutsType::Asleep => "asleep",
-                        };
-
                         if let Some(whereabouts_id) =
-                            &config.whereabouts_keys_to_ids.get(whereabouts_key)
+                            &config.buttons_to_whereabouts.get(&button_name)
                         {
+                            println!("Submitting whereabouts for user {user_id}.");
+
                             let response = api::update_status(
                                 &config.api_url,
                                 &config.api_token,
@@ -198,7 +186,7 @@ fn main() -> Result<()> {
                                 Err(e) => println!("Request failed.\n{e}"),
                             }
 
-                            if let Some(filenames) = config.whereabouts_sounds.get(whereabouts_key)
+                            if let Some(filenames) = config.whereabouts_sounds.get(*whereabouts_id)
                             {
                                 let random_index = rng.generate_range(0..filenames.len());
                                 let filename = &filenames[random_index];

@@ -8,20 +8,24 @@ sounds_path = "sounds"
 [user_sounds]
 "ff4d72e5-f0c5-4097-b09d-5e5b634eb353" = "hallo-yogi.ogg"
 
-[whereabouts_keys_to_ids]
-present = "2ace4e57-e083-490b-ad10-3d214666db57"
-away = "568d4a1e-5af0-43cd-8249-832ffc387e4d"
-asleep = "92f92f15-fbc1-4e77-bd75-65186f9e4a4d"
+[buttons_to_whereabouts]
+button1 = "2ace4e57-e083-490b-ad10-3d214666db57"  # present in bungalow
+button2 = "568d4a1e-5af0-43cd-8249-832ffc387e4d"  # away
+button3 = "92f92f15-fbc1-4e77-bd75-65186f9e4a4d"  # asleep
+button4 = "a56c0592-9714-409e-b17a-6efc3f9c1c32"  # mystery zone
 
 [whereabouts_sounds]
-present = [
+"2ace4e57-e083-490b-ad10-3d214666db57" = [
     "na-endlich.ogg",
     "willkommen-zurueck.ogg",
 ]
-away = [
+"568d4a1e-5af0-43cd-8249-832ffc387e4d" = [
     "auf-wiedersehen.ogg",
     "bis-bald.ogg",
 ]
-asleep = [
+"92f92f15-fbc1-4e77-bd75-65186f9e4a4d" = [
     "gute-nacht-schlaf-schoen.ogg",
+]
+"a56c0592-9714-409e-b17a-6efc3f9c1c32" = [
+    "willkommen-in-der-mystery-zone.ogg",
 ]
