@@ -186,7 +186,10 @@ fn main() -> Result<()> {
                             );
                             match response {
                                 Ok(_) => println!("Request successfully submitted."),
-                                Err(e) => println!("Request failed.\n{e}"),
+                                Err(e) => {
+                                    println!("Request failed.\n{e}");
+                                    player.play("oh-nein-netzwerkfehler.ogg")?;
+                                }
                             }
 
                             if let Some(filenames) = config.whereabouts_sounds.get(*whereabouts_id)
