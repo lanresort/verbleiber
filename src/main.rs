@@ -7,7 +7,6 @@ use anyhow::Result;
 use evdev::{Device, EventType, InputEventKind, Key};
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
-use rodio::{OutputStream, Sink};
 use std::process::exit;
 use std::thread;
 use std::time::Duration;
@@ -46,11 +45,6 @@ fn main() -> Result<()> {
 
     let config = config::load_config(&args.config_filename)?;
 
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let sink = Sink::try_new(&stream_handle).unwrap();
-
-    sink.sleep_until_end();
-
     let mut reader_input_device = Device::open(&args.reader_input_device)?;
     println!(
         "Opened reader input device \"{}\".",
@@ -87,7 +81,7 @@ fn main() -> Result<()> {
 
     let mut rng = WyRand::new();
 
-    let player = audio::Player::new(config.sounds_path.clone(), &sink);
+    let player = audio::Player::new(config.sounds_path.clone());
 
     let (tx1, rx): (Sender<Input>, Receiver<Input>) = flume::unbounded();
     let tx2 = tx1.clone();

@@ -4,18 +4,23 @@
  */
 
 use anyhow::Result;
-use rodio::{Decoder, Sink};
+use rodio::{Decoder, OutputStream, Sink};
 use std::fs::File;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
 
-pub(crate) struct Player<'a> {
+pub(crate) struct Player {
     dir: PathBuf,
-    sink: &'a Sink,
+    sink: Sink,
 }
 
-impl<'a> Player<'a> {
-    pub fn new(dir: PathBuf, sink: &Sink) -> Player {
+impl Player {
+    pub fn new(dir: PathBuf) -> Player {
+        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+        let sink = Sink::try_new(&stream_handle).unwrap();
+
+        sink.sleep_until_end();
+
         Player { dir, sink }
     }
 
