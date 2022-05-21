@@ -10,6 +10,7 @@ use nanorand::{Rng, WyRand};
 use rodio::{OutputStream, Sink};
 use std::process::exit;
 use std::thread;
+use std::time::Duration;
 mod api;
 mod audio;
 mod cli;
@@ -175,11 +176,13 @@ fn main() -> Result<()> {
                         {
                             println!("Submitting whereabouts for user {user_id}.");
 
+                            let timeout = Duration::from_secs(config.http_timeout_in_seconds);
                             let response = api::update_status(
                                 &config.api_url,
                                 &config.api_token,
                                 &user_id,
                                 whereabouts_id,
+                                timeout,
                             );
                             match response {
                                 Ok(_) => println!("Request successfully submitted."),

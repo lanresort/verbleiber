@@ -11,6 +11,7 @@ use std::path::{Path, PathBuf};
 
 #[derive(Deserialize)]
 pub(crate) struct Config {
+    pub http_timeout_in_seconds: u64,
     pub api_token: String,
     pub api_url: String,
     pub sounds_path: PathBuf,
