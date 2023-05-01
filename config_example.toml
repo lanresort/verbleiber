@@ -4,13 +4,13 @@ http_timeout_in_seconds = 10
 sounds_path = "sounds"
 
 [tags_to_user_ids]
-"0000000001" = "ff4d72e5-f0c5-4097-b09d-5e5b634eb353"  # yogi
+"0000000001" = "ff4d72e5-f0c5-4097-b09d-5e5b634eb353"  # user01
 
 [user_sounds]
-"ff4d72e5-f0c5-4097-b09d-5e5b634eb353" = "hallo-yogi.ogg"
+"ff4d72e5-f0c5-4097-b09d-5e5b634eb353" = "hello-user01.ogg"
 
 [buttons_to_whereabouts]
-button1 = "2ace4e57-e083-490b-ad10-3d214666db57"  # present in bungalow
+button1 = "2ace4e57-e083-490b-ad10-3d214666db57"  # present in this location
 button2 = "568d4a1e-5af0-43cd-8249-832ffc387e4d"  # away
 button3 = "92f92f15-fbc1-4e77-bd75-65186f9e4a4d"  # asleep
 button4 = "a56c0592-9714-409e-b17a-6efc3f9c1c32"  # mystery zone
