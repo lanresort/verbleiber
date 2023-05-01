@@ -163,40 +163,36 @@ fn main() -> Result<()> {
             Input::Button(button_name) => {
                 println!("Button pressed: {button_name}");
 
-                match current_user_id {
-                    Some(user_id) => {
-                        if let Some(whereabouts_id) =
-                            &config.buttons_to_whereabouts.get(&button_name)
-                        {
-                            println!("Submitting whereabouts for user {user_id}.");
+                // Submit if user has identified; ignore if no user has
+                // been specified.
+                if let Some(user_id) = current_user_id {
+                    if let Some(whereabouts_id) = &config.buttons_to_whereabouts.get(&button_name) {
+                        println!("Submitting whereabouts for user {user_id}.");
 
-                            let timeout = Duration::from_secs(config.http_timeout_in_seconds);
-                            let response = api::update_status(
-                                &config.api_url,
-                                &config.api_token,
-                                &user_id,
-                                whereabouts_id,
-                                timeout,
-                            );
-                            match response {
-                                Ok(_) => println!("Request successfully submitted."),
-                                Err(e) => {
-                                    println!("Request failed.\n{e}");
-                                    player.play("oh-nein-netzwerkfehler.ogg")?;
-                                }
-                            }
-
-                            if let Some(filenames) = config.whereabouts_sounds.get(*whereabouts_id)
-                            {
-                                let random_index = rng.generate_range(0..filenames.len());
-                                let filename = &filenames[random_index];
-                                player.play(filename)?;
+                        let timeout = Duration::from_secs(config.http_timeout_in_seconds);
+                        let response = api::update_status(
+                            &config.api_url,
+                            &config.api_token,
+                            &user_id,
+                            whereabouts_id,
+                            timeout,
+                        );
+                        match response {
+                            Ok(_) => println!("Request successfully submitted."),
+                            Err(e) => {
+                                println!("Request failed.\n{e}");
+                                player.play("oh-nein-netzwerkfehler.ogg")?;
                             }
                         }
 
-                        current_user_id = None; // reset
+                        if let Some(filenames) = config.whereabouts_sounds.get(*whereabouts_id) {
+                            let random_index = rng.generate_range(0..filenames.len());
+                            let filename = &filenames[random_index];
+                            player.play(filename)?;
+                        }
                     }
-                    None => (), // Ignore if no user has been specified.
+
+                    current_user_id = None; // reset
                 }
             }
         }
