@@ -13,7 +13,7 @@ keywords = ["rfid"]
 [dependencies]
 anyhow = "1.0"
 clap = { version = "3.1.18", default-features = false, features = ["derive", "std"] }
-evdev = { version = "0.11.4" }
+evdev = { version = "0.12.1" }
 flume = "0.10"
 nanorand = "0.7.0"
 rodio = { version = "0.15", default-features = false, features = ["vorbis"] }
