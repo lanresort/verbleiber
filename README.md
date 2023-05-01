@@ -1,10 +1,65 @@
 # Verbleiber
 
 
+## The System
+
+The Verbleiber (German; roughly "Whereabouter") is a system for presence
+tracking.
+
+It consists of:
+- hardware clients at different locations to sent presence information
+- a central backend to accept, persist, and provide presence information
+- a frontend to give an overview of the presences
+
+Users can authenticate themselves via barcode or RFID transponder to a
+hardware client configured for and placed at a specific location and set
+their new status:
+
+- When they are arriving, they "check in" to that location.
+- When they are leaving, they move to the "travelling" status.
+- Just before they go to sleep, they can set that as their new status.
+
+Multiple locations would have such devices set up, so when a person
+arrives at another location, they can "check in" there, changing their
+status from "travelling" to being at the new location.
+
+
+## This Application
+
+This application is a software implementation for such a hardware
+client in [Rust](https://www.rust-lang.org/).
+
+To save time, the first set of clients was assembled from USB devices
+(cheap RFID reader, cheap gamepad with arcade buttons soldered to it)
+which are then connected to small form factor computers.
+
+For future device generations, tiny computers (like Raspberry Pis) or
+even custom-built hardware would be a nice.
+
+For an implementation of a backend and overview frontend, which are not
+covered here, check out the [Whereabouts
+extension](https://github.com/lanresort/byceps-whereabouts) for the
+[BYCEPS](https://byceps.nwsnet.de/) LAN party platform.
+
+
 ## Usage
+
+Start the application by specifying a configuration file
+(`-c`/`--config`), a barcode/RFID reader device
+(`-r`/`--reader-input-device`), and a push button input device
+(`-b`/`--button-input-device`):
 
 ```sh
 $ verbleiber -c config.toml -r /dev/input/event23 -b /dev/input/event42
+```
+
+It might be helpful to address the devices by their ID (if your system
+provides such symlinks in `/dev/input/by-id`) so they are independent of
+the varying event device number they get assigned depending on the order
+they are connected to the host and other factors. For example:
+
+```sh
+$ verbleiber -c config.toml -r /dev/input/by-id/usb-HXGCoLtd_HIDKeys-event-kbd -b /dev/input/by-id/usb-0079_USB_Gamepad-event-joystick
 ```
 
 
