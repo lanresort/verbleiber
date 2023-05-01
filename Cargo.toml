@@ -3,12 +3,11 @@ name = "verbleiber"
 version = "0.1.0-dev"
 authors = ["Jochen Kupperschmidt"]
 edition = "2021"
-description = "Log orga whereabouts via RFID tags and buttons"
+description = "Log organizer whereabouts on events via RFID tags and buttons"
 readme = "README.md"
-homepage = "https://homework.nwsnet.de/"
-repository = "https://github.com/homeworkprod"
+repository = "https://github.com/lanresort/verbleiber"
 license = "MIT"
-keywords = ["rfid"]
+keywords = ["presence", "rfid"]
 
 [dependencies]
 anyhow = "1.0"
