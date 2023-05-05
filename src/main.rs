@@ -169,10 +169,10 @@ fn main() -> Result<()> {
                     if let Some(whereabouts_id) = &config.buttons_to_whereabouts.get(&button_name) {
                         println!("Submitting whereabouts for user {user_id}.");
 
-                        let timeout = Duration::from_secs(config.http_timeout_in_seconds);
+                        let timeout = Duration::from_secs(config.api.timeout_in_seconds);
                         let response = api::update_status(
-                            &config.api_url,
-                            &config.api_token,
+                            &config.api.url,
+                            &config.api.auth_token,
                             &user_id,
                             whereabouts_id,
                             timeout,

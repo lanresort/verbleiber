@@ -11,14 +11,19 @@ use std::path::{Path, PathBuf};
 
 #[derive(Deserialize)]
 pub(crate) struct Config {
-    pub http_timeout_in_seconds: u64,
-    pub api_token: String,
-    pub api_url: String,
     pub sounds_path: PathBuf,
+    pub api: ApiConfig,
     pub tags_to_user_ids: HashMap<String, String>,
     pub user_sounds: HashMap<String, String>,
     pub buttons_to_whereabouts: HashMap<String, String>,
     pub whereabouts_sounds: HashMap<String, Vec<String>>,
+}
+
+#[derive(Deserialize)]
+pub(crate) struct ApiConfig {
+    pub url: String,
+    pub auth_token: String,
+    pub timeout_in_seconds: u64,
 }
 
 pub(crate) fn load_config(path: &Path) -> Result<Config> {

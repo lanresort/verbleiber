@@ -1,7 +1,9 @@
-api_token = "__redacted__"
-api_url = "https://byceps.example/api/v1/whereabouts/set_status"
-http_timeout_in_seconds = 10
 sounds_path = "sounds"
+
+[api]
+url = "https://byceps.example/api/v1/whereabouts/set_status"
+auth_token = "__redacted__"
+timeout_in_seconds = 10
 
 [tags_to_user_ids]
 "0000000001" = "ff4d72e5-f0c5-4097-b09d-5e5b634eb353"  # user01
