@@ -44,22 +44,21 @@ extension](https://github.com/lanresort/byceps-whereabouts) for the
 
 ## Usage
 
-Start the application by specifying a configuration file
-(`-c`/`--config`), a barcode/RFID reader device
-(`-r`/`--reader-input-device`), and a push button input device
-(`-b`/`--button-input-device`):
+Create a configuration file based on the provided example and adjust as
+necessary.
 
-```sh
-$ verbleiber -c config.toml -r /dev/input/event23 -b /dev/input/event42
-```
-
-It might be helpful to address the devices by their ID (if your system
+`reader_input_device` should reference a barcode/RFID reader,
+`button_input_device` a push button input device (e.g. a gamepad). It
+might be helpful to address the devices by their ID (if your system
 provides such symlinks in `/dev/input/by-id`) so they are independent of
 the varying event device number they get assigned depending on the order
-they are connected to the host and other factors. For example:
+they are connected to the host and other factors.
+
+Start the application by specifying a configuration file
+(`-c`/`--config`):
 
 ```sh
-$ verbleiber -c config.toml -r /dev/input/by-id/usb-HXGCoLtd_HIDKeys-event-kbd -b /dev/input/by-id/usb-0079_USB_Gamepad-event-joystick
+$ verbleiber -c config.toml
 ```
 
 

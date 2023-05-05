@@ -45,7 +45,7 @@ fn main() -> Result<()> {
 
     let config = config::load_config(&args.config_filename)?;
 
-    let mut reader_input_device = Device::open(&args.reader_input_device)?;
+    let mut reader_input_device = Device::open(&config.reader_input_device)?;
     println!(
         "Opened reader input device \"{}\".",
         reader_input_device.name().unwrap_or("unnamed device")
@@ -62,7 +62,7 @@ fn main() -> Result<()> {
         }
     }
 
-    let mut button_input_device = Device::open(&args.button_input_device)?;
+    let mut button_input_device = Device::open(&config.button_input_device)?;
     println!(
         "Opened button input device \"{}\".",
         button_input_device.name().unwrap_or("unnamed device")

@@ -1,3 +1,5 @@
+reader_input_device = "/dev/input/event23"
+button_input_device = "/dev/input/event42"
 sounds_path = "sounds"
 
 [api]

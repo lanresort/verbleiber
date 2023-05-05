@@ -13,14 +13,6 @@ pub(crate) struct Args {
     /// Specify configuration filename (e.g. `config.toml`)
     #[clap(short = 'c', long = "config")]
     pub config_filename: PathBuf,
-
-    /// Specify RFID/barcode reader input device (e.g. `/dev/input/event23`)
-    #[clap(short = 'r', long = "reader-input-device")]
-    pub reader_input_device: String,
-
-    /// Specify button input device (e.g. `/dev/input/event24`)
-    #[clap(short = 'b', long = "button-input-device")]
-    pub button_input_device: String,
 }
 
 pub(crate) fn parse_args() -> Args {

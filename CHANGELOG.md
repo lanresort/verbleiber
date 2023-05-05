@@ -3,6 +3,8 @@
 
 ## 0.2.0 (unreleased)
 
+- Turned device command-line arguments into configuration properties.
+
 - Grouped API-related configuration properties.
 
 
