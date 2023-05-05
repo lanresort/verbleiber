@@ -1,6 +1,6 @@
 [package]
 name = "verbleiber"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Jochen Kupperschmidt"]
 edition = "2021"
 description = "Log organizer whereabouts on events via RFID tags and buttons"
