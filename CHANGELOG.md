@@ -1,7 +1,7 @@
 # Changelog
 
 
-## 0.3.0 (unreleased)
+## 0.3.0 (2023-05-05)
 
 - Fixed audio playback.
 
