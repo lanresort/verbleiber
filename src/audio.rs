@@ -35,6 +35,7 @@ impl SoundLibrary {
 
 pub(crate) struct Player {
     sound_lib: SoundLibrary,
+    _stream: OutputStream, // Hold reference to avoid sound playback from breaking!
     sink: Sink,
 }
 
@@ -45,14 +46,17 @@ impl Player {
         let (_stream, stream_handle) = OutputStream::try_default().unwrap();
         let sink = Sink::try_new(&stream_handle).unwrap();
 
-        sink.sleep_until_end();
-
-        Player { sound_lib, sink }
+        Player {
+            sound_lib,
+            _stream,
+            sink,
+        }
     }
 
     pub fn play(&self, filename: &str) -> Result<()> {
         let source = self.sound_lib.load_sound(filename)?;
         self.sink.append(source);
+        self.sink.sleep_until_end();
 
         Ok(())
     }

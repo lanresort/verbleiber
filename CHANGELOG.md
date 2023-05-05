@@ -3,6 +3,8 @@
 
 ## 0.3.0 (unreleased)
 
+- Fixed audio playback.
+
 
 ## 0.2.0 (2023-05-05)
 
