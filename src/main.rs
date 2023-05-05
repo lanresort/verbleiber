@@ -151,13 +151,19 @@ fn main() -> Result<()> {
             Input::User(tag_id) => {
                 println!("User tag ID: {tag_id}");
 
-                if let Some(user_id) = config.tags_to_user_ids.get(&tag_id) {
-                    if let Some(filename) = config.user_sounds.get(user_id) {
-                        player.play(filename)?;
-                    }
+                match config.tags_to_user_ids.get(&tag_id) {
+                    Some(user_id) => {
+                        if let Some(filename) = config.user_sounds.get(user_id) {
+                            player.play(filename)?;
+                        }
 
-                    println!("Awaiting whereabouts for user {user_id} ...");
-                    current_user_id = Some(user_id.to_string());
+                        println!("Awaiting whereabouts for user {user_id} ...");
+                        current_user_id = Some(user_id.to_string());
+                    }
+                    None => {
+                        println!("Unknown user tag: {tag_id}");
+                        player.play("unknown_user_tag.ogg")?;
+                    }
                 }
             }
             Input::Button(button_name) => {
