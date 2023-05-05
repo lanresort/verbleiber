@@ -97,7 +97,8 @@ fn main() -> Result<()> {
 
     let mut rng = WyRand::new();
 
-    let player = audio::Player::new(config.sounds_path.clone());
+    let sounds_path = config.sounds_path.clone();
+    let player = audio::Player::new(sounds_path);
 
     let (tx1, rx): (Sender<Input>, Receiver<Input>) = flume::unbounded();
     let tx2 = tx1.clone();
