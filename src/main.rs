@@ -45,11 +45,19 @@ fn main() -> Result<()> {
 
     let config = config::load_config(&args.config_filename)?;
 
-    let mut reader_input_device = Device::open(&config.reader_input_device)?;
-    println!(
-        "Opened reader input device \"{}\".",
-        reader_input_device.name().unwrap_or("unnamed device")
-    );
+    let mut reader_input_device = match Device::open(&config.reader_input_device) {
+        Ok(reader_input_device) => {
+            println!(
+                "Opened reader input device \"{}\".",
+                reader_input_device.name().unwrap_or("unnamed device")
+            );
+            reader_input_device
+        }
+        Err(error) => {
+            eprintln!("Could not open reader input device: {}", error);
+            exit(1);
+        }
+    };
 
     match reader_input_device.grab() {
         Ok(_) => println!("Successfully obtained exclusive access to reader input device."),
@@ -62,11 +70,19 @@ fn main() -> Result<()> {
         }
     }
 
-    let mut button_input_device = Device::open(&config.button_input_device)?;
-    println!(
-        "Opened button input device \"{}\".",
-        button_input_device.name().unwrap_or("unnamed device")
-    );
+    let mut button_input_device = match Device::open(&config.button_input_device) {
+        Ok(button_input_device) => {
+            println!(
+                "Opened button input device \"{}\".",
+                button_input_device.name().unwrap_or("unnamed device")
+            );
+            button_input_device
+        }
+        Err(error) => {
+            eprintln!("Could not open button input device: {}", error);
+            exit(1);
+        }
+    };
 
     match button_input_device.grab() {
         Ok(_) => println!("Successfully obtained exclusive access to button input device."),

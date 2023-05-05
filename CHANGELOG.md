@@ -7,6 +7,9 @@
 
 - Grouped API-related configuration properties.
 
+- Show clarifying error message and exit cleanly if input devices could
+  not be opened.
+
 - Play sound if user tag is unknown.
 
 
