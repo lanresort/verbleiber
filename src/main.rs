@@ -15,10 +15,11 @@ mod audio;
 mod cli;
 mod config;
 mod devices;
+mod model;
+
+use crate::model::UserId;
 
 // TODO: Replace `.unwrap()` with `?` in threads.
-
-type UserId = String;
 
 enum Input {
     User(UserId),
