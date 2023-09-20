@@ -3,6 +3,10 @@
 
 ## 0.4.0 (unreleased)
 
+- Replaced full URL API config property `url` with new property
+  `base_url` which leaves out the specific endpoint remainder (which is
+  now hard-coded) to support more endpoints without more configuration.
+
 
 ## 0.3.0 (2023-05-05)
 

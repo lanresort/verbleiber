@@ -100,7 +100,7 @@ fn main() -> Result<()> {
 
                         let timeout = Duration::from_secs(config.api.timeout_in_seconds);
                         let response = api::update_status(
-                            &config.api.url,
+                            &config.api.base_url,
                             &config.api.auth_token,
                             &user_id,
                             whereabouts_id,

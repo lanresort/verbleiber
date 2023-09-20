@@ -3,7 +3,7 @@ button_input_device = "/dev/input/event42"
 sounds_path = "sounds"
 
 [api]
-url = "https://byceps.example/api/v1/whereabouts/set_status"
+base_url = "https://byceps.example/api/v1/whereabouts"
 auth_token = "__redacted__"
 timeout_in_seconds = 10
 
