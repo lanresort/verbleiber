@@ -21,7 +21,7 @@ use crate::model::UserId;
 
 // TODO: Replace `.unwrap()` with `?` in threads.
 
-enum Input {
+enum UserInput {
     User(UserId),
     Button(String),
 }
@@ -62,7 +62,7 @@ fn main() -> Result<()> {
     let sounds_path = config.sounds_path.clone();
     let player = audio::Player::new(sounds_path);
 
-    let (tx1, rx): (Sender<Input>, Receiver<Input>) = flume::unbounded();
+    let (tx1, rx): (Sender<UserInput>, Receiver<UserInput>) = flume::unbounded();
     let tx2 = tx1.clone();
 
     // RFID/barcode reader
@@ -79,7 +79,7 @@ fn main() -> Result<()> {
                     InputEventKind::Key(Key::KEY_ENTER) => {
                         let input = read_chars.as_str();
 
-                        let user = Input::User(input.to_string());
+                        let user = UserInput::User(input.to_string());
                         tx1.send(user).unwrap();
 
                         read_chars.clear();
@@ -106,16 +106,16 @@ fn main() -> Result<()> {
 
                 match event.kind() {
                     InputEventKind::Key(Key::BTN_TOP) => {
-                        tx2.send(Input::Button("button1".to_string())).unwrap();
+                        tx2.send(UserInput::Button("button1".to_string())).unwrap();
                     }
                     InputEventKind::Key(Key::BTN_TRIGGER) => {
-                        tx2.send(Input::Button("button2".to_string())).unwrap();
+                        tx2.send(UserInput::Button("button2".to_string())).unwrap();
                     }
                     InputEventKind::Key(Key::BTN_THUMB2) => {
-                        tx2.send(Input::Button("button3".to_string())).unwrap();
+                        tx2.send(UserInput::Button("button3".to_string())).unwrap();
                     }
                     InputEventKind::Key(Key::BTN_THUMB) => {
-                        tx2.send(Input::Button("button4".to_string())).unwrap();
+                        tx2.send(UserInput::Button("button4".to_string())).unwrap();
                     }
                     _ => (),
                 }
@@ -127,7 +127,7 @@ fn main() -> Result<()> {
 
     for msg in rx.iter() {
         match msg {
-            Input::User(tag_id) => {
+            UserInput::User(tag_id) => {
                 println!("User tag ID: {tag_id}");
 
                 match config.tags_to_user_ids.get(&tag_id) {
@@ -145,7 +145,7 @@ fn main() -> Result<()> {
                     }
                 }
             }
-            Input::Button(button_name) => {
+            UserInput::Button(button_name) => {
                 println!("Button pressed: {button_name}");
 
                 // Submit if user has identified; ignore if no user has
