@@ -7,7 +7,6 @@ use anyhow::Result;
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
 use std::thread;
-use std::time::Duration;
 
 mod api;
 mod audio;
@@ -17,6 +16,7 @@ mod devices;
 mod model;
 mod userinput;
 
+use crate::api::ApiClient;
 use crate::model::UserId;
 use crate::userinput::{StringReader, UserInput};
 
@@ -69,6 +69,8 @@ fn main() -> Result<()> {
 
     let mut current_user_id: Option<UserId> = None;
 
+    let api_client = ApiClient::new(&config.api);
+
     for msg in rx.iter() {
         match msg {
             UserInput::User(tag_id) => {
@@ -98,14 +100,7 @@ fn main() -> Result<()> {
                     if let Some(whereabouts_id) = &config.buttons_to_whereabouts.get(&button_name) {
                         println!("Submitting whereabouts for user {user_id}.");
 
-                        let timeout = Duration::from_secs(config.api.timeout_in_seconds);
-                        let response = api::update_status(
-                            &config.api.base_url,
-                            &config.api.auth_token,
-                            &user_id,
-                            whereabouts_id,
-                            timeout,
-                        );
+                        let response = api_client.update_status(&user_id, whereabouts_id);
                         match response {
                             Ok(_) => println!("Request successfully submitted."),
                             Err(e) => {
