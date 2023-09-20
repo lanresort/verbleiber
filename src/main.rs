@@ -4,7 +4,7 @@
  */
 
 use anyhow::Result;
-use evdev::{EventType, InputEventKind, Key};
+use evdev::{InputEventKind, Key};
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
 use std::thread;
@@ -16,31 +16,12 @@ mod cli;
 mod config;
 mod devices;
 mod model;
+mod userinput;
 
 use crate::model::UserId;
+use crate::userinput::UserInput;
 
 // TODO: Replace `.unwrap()` with `?` in threads.
-
-enum UserInput {
-    User(UserId),
-    Button(String),
-}
-
-fn get_char(key: Key) -> Option<char> {
-    match key {
-        Key::KEY_1 => Some('1'),
-        Key::KEY_2 => Some('2'),
-        Key::KEY_3 => Some('3'),
-        Key::KEY_4 => Some('4'),
-        Key::KEY_5 => Some('5'),
-        Key::KEY_6 => Some('6'),
-        Key::KEY_7 => Some('7'),
-        Key::KEY_8 => Some('8'),
-        Key::KEY_9 => Some('9'),
-        Key::KEY_0 => Some('0'),
-        _ => None,
-    }
-}
 
 fn main() -> Result<()> {
     let args = cli::parse_args();
@@ -71,7 +52,7 @@ fn main() -> Result<()> {
         loop {
             for event in reader_input_device.fetch_events().unwrap() {
                 // Only handle pressed key events.
-                if event.event_type() != EventType::KEY || event.value() == 1 {
+                if !userinput::is_key_released(event) {
                     continue;
                 }
 
@@ -85,7 +66,7 @@ fn main() -> Result<()> {
                         read_chars.clear();
                     }
                     InputEventKind::Key(key) => {
-                        if let Some(ch) = get_char(key) {
+                        if let Some(ch) = userinput::get_char(key) {
                             read_chars.push(ch)
                         }
                     }
@@ -96,29 +77,10 @@ fn main() -> Result<()> {
     });
 
     // buttons
-    thread::spawn(move || {
-        loop {
-            for event in button_input_device.fetch_events().unwrap() {
-                // Only handle pressed key events.
-                if event.event_type() != EventType::KEY || event.value() == 1 {
-                    continue;
-                }
-
-                match event.kind() {
-                    InputEventKind::Key(Key::BTN_TOP) => {
-                        tx2.send(UserInput::Button("button1".to_string())).unwrap();
-                    }
-                    InputEventKind::Key(Key::BTN_TRIGGER) => {
-                        tx2.send(UserInput::Button("button2".to_string())).unwrap();
-                    }
-                    InputEventKind::Key(Key::BTN_THUMB2) => {
-                        tx2.send(UserInput::Button("button3".to_string())).unwrap();
-                    }
-                    InputEventKind::Key(Key::BTN_THUMB) => {
-                        tx2.send(UserInput::Button("button4".to_string())).unwrap();
-                    }
-                    _ => (),
-                }
+    thread::spawn(move || loop {
+        for event in button_input_device.fetch_events().unwrap() {
+            if let Some(button) = userinput::handle_button_press(event) {
+                tx2.send(button).unwrap()
             }
         }
     });
