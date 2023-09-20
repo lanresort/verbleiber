@@ -4,7 +4,6 @@
  */
 
 use anyhow::Result;
-use evdev::{InputEventKind, Key};
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
 use std::thread;
@@ -19,7 +18,7 @@ mod model;
 mod userinput;
 
 use crate::model::UserId;
-use crate::userinput::UserInput;
+use crate::userinput::{StringReader, UserInput};
 
 // TODO: Replace `.unwrap()` with `?` in threads.
 
@@ -48,29 +47,12 @@ fn main() -> Result<()> {
 
     // RFID/barcode reader
     thread::spawn(move || {
-        let mut read_chars = String::new();
+        let mut string_reader = StringReader::new();
         loop {
             for event in reader_input_device.fetch_events().unwrap() {
-                // Only handle pressed key events.
-                if !userinput::is_key_released(event) {
-                    continue;
-                }
-
-                match event.kind() {
-                    InputEventKind::Key(Key::KEY_ENTER) => {
-                        let input = read_chars.as_str();
-
-                        let user = UserInput::User(input.to_string());
-                        tx1.send(user).unwrap();
-
-                        read_chars.clear();
-                    }
-                    InputEventKind::Key(key) => {
-                        if let Some(ch) = userinput::get_char(key) {
-                            read_chars.push(ch)
-                        }
-                    }
-                    _ => (),
+                if let Some(s) = string_reader.handle_event(event) {
+                    let user = UserInput::User(s.to_string());
+                    tx1.send(user).unwrap();
                 }
             }
         }

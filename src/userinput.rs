@@ -12,7 +12,46 @@ pub(crate) enum UserInput {
     Button(String),
 }
 
-pub(crate) fn get_char(key: Key) -> Option<char> {
+pub(crate) struct StringReader {
+    chars_read: String,
+}
+
+impl StringReader {
+    pub fn new() -> Self {
+        Self {
+            chars_read: String::new(),
+        }
+    }
+
+    pub fn handle_event(&mut self, event: InputEvent) -> Option<String> {
+        if !is_key_released(event) {
+            return None;
+        }
+
+        if let InputEventKind::Key(key) = event.kind() {
+            match key {
+                Key::KEY_ENTER => {
+                    let input = &self.chars_read.as_str().to_owned();
+
+                    self.chars_read.clear();
+
+                    Some(input.to_owned())
+                }
+                key => match get_char(key) {
+                    Some(ch) => {
+                        self.chars_read.push(ch);
+                        None
+                    }
+                    None => None,
+                },
+            }
+        } else {
+            None
+        }
+    }
+}
+
+fn get_char(key: Key) -> Option<char> {
     match key {
         Key::KEY_1 => Some('1'),
         Key::KEY_2 => Some('2'),
@@ -39,7 +78,7 @@ pub(crate) fn handle_button_press(event: InputEvent) -> Option<UserInput> {
     }
 }
 
-pub(crate) fn is_key_released(event: InputEvent) -> bool {
+fn is_key_released(event: InputEvent) -> bool {
     event.event_type() == EventType::KEY && event.value() == 0
 }
 
