@@ -73,10 +73,10 @@ fn main() -> Result<()> {
 
     for msg in rx.iter() {
         match msg {
-            UserInput::User(tag_id) => {
-                println!("User tag ID: {tag_id}");
+            UserInput::User(tag) => {
+                println!("User tag ID: {tag}");
 
-                match config.tags_to_user_ids.get(&tag_id) {
+                match config.tags_to_user_ids.get(&tag) {
                     Some(user_id) => {
                         if let Some(filename) = config.user_sounds.get(user_id) {
                             player.play(filename)?;
@@ -86,7 +86,7 @@ fn main() -> Result<()> {
                         current_user_id = Some(user_id.to_string());
                     }
                     None => {
-                        println!("Unknown user tag: {tag_id}");
+                        println!("Unknown user tag: {tag}");
                         player.play("unknown_user_tag.ogg")?;
                     }
                 }
