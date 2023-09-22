@@ -3,6 +3,7 @@
  * License: MIT
  */
 
+use anyhow::{anyhow, Result};
 use std::time::Duration;
 
 use crate::config::ApiConfig;
@@ -22,16 +23,15 @@ impl ApiClient {
         }
     }
 
-    pub(crate) fn update_status(
-        &self,
-        user_id: &str,
-        whereabouts_id: &str,
-    ) -> Result<ureq::Response, ureq::Error> {
+    pub(crate) fn update_status(&self, user_id: &str, whereabouts_id: &str) -> Result<()> {
         let url = format!("{}/set_status", &self.base_url);
         let authz_value = format!("Bearer {}", &self.auth_token);
+
         ureq::post(&url)
             .timeout(self.timeout)
             .set("Authorization", &authz_value)
             .send_json(ureq::json!({"user_id": &user_id, "whereabouts_id": whereabouts_id}))
+            .map_err(|e| anyhow!("Network error: {}", e))
+            .map(|_| Ok(()))?
     }
 }
