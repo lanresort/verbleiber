@@ -7,6 +7,10 @@
   `base_url` which leaves out the specific endpoint remainder (which is
   now hard-coded) to support more endpoints without more configuration.
 
+- Changed flow to fetch user data for a tag from the new API endpoint
+  instead of keeping local mapping. This obsoletes the configuration
+  table `tags_to_user_ids`.
+
 
 ## 0.3.0 (2023-05-05)
 

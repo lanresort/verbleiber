@@ -76,20 +76,35 @@ fn main() -> Result<()> {
             UserInput::User(tag) => {
                 println!("Tag read: {tag}");
 
-                match config.tags_to_user_ids.get(&tag) {
-                    Some(user_id) => {
-                        if let Some(filename) = config.user_sounds.get(user_id) {
-                            player.play(filename)?;
-                        }
+                println!("Requesting details for tag {} ...", tag);
+                match api_client.get_tag_details(&tag) {
+                    Ok(details) => match details {
+                        Some(details) => {
+                            println!(
+                                "User for tag {}: {} (ID: {})",
+                                details.tag,
+                                details.user.screen_name.unwrap_or("<nameless>".to_string()),
+                                details.user.id
+                            );
+                            let user_id = details.user.id;
 
-                        println!("Awaiting whereabouts for user {user_id} ...");
-                        current_user_id = Some(user_id.to_string());
+                            if let Some(filename) = config.user_sounds.get(&user_id) {
+                                player.play(filename)?;
+                            }
+
+                            println!("Awaiting whereabouts for user {user_id} ...");
+                            current_user_id = Some(user_id.to_string());
+                        }
+                        None => {
+                            println!("Unknown user tag: {tag}");
+                            player.play("unknown_user_tag.ogg")?;
+                        }
+                    },
+                    Err(e) => {
+                        println!("Requesting tag details failed.\n{e}");
+                        player.play("oh-nein-netzwerkfehler.ogg")?;
                     }
-                    None => {
-                        println!("Unknown user tag: {tag}");
-                        player.play("unknown_user_tag.ogg")?;
-                    }
-                }
+                };
             }
             UserInput::Button(button_name) => {
                 println!("Button pressed: {button_name}");
