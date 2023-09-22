@@ -102,16 +102,20 @@ fn main() -> Result<()> {
 
                         let response = api_client.update_status(&user_id, whereabouts_id);
                         match response {
-                            Ok(_) => println!("Status successfully updated."),
+                            Ok(_) => {
+                                println!("Status successfully updated.");
+
+                                if let Some(filenames) =
+                                    config.whereabouts_sounds.get(*whereabouts_id)
+                                {
+                                    let filename = choose_random_element(filenames, &mut rng);
+                                    player.play(&filename)?;
+                                }
+                            }
                             Err(e) => {
                                 println!("Status update failed.\n{e}");
                                 player.play("oh-nein-netzwerkfehler.ogg")?;
                             }
-                        }
-
-                        if let Some(filenames) = config.whereabouts_sounds.get(*whereabouts_id) {
-                            let filename = choose_random_element(filenames, &mut rng);
-                            player.play(&filename)?;
                         }
                     }
 
