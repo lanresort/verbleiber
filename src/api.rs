@@ -20,6 +20,7 @@ pub(crate) struct ApiClient {
 pub(crate) struct TagDetails {
     pub tag: String,
     pub user: TagUser,
+    pub sound_filename: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

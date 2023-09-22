@@ -15,7 +15,6 @@ pub(crate) struct Config {
     pub button_input_device: String,
     pub sounds_path: PathBuf,
     pub api: ApiConfig,
-    pub user_sounds: HashMap<String, String>,
     pub buttons_to_whereabouts: HashMap<String, String>,
     pub whereabouts_sounds: HashMap<String, Vec<String>>,
 }

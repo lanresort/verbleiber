@@ -11,6 +11,9 @@
   instead of keeping local mapping. This obsoletes the configuration
   table `tags_to_user_ids`.
 
+- Obtain filename of sound to play for a user from tag details returned
+  by the API. This obsoletes the configuration table `user_sounds`.
+
 
 ## 0.3.0 (2023-05-05)
 

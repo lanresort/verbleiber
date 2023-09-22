@@ -88,8 +88,8 @@ fn main() -> Result<()> {
                             );
                             let user_id = details.user.id;
 
-                            if let Some(filename) = config.user_sounds.get(&user_id) {
-                                player.play(filename)?;
+                            if let Some(filename) = details.sound_filename {
+                                player.play(&filename)?;
                             }
 
                             println!("Awaiting whereabouts for user {user_id} ...");
