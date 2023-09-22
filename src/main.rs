@@ -110,9 +110,8 @@ fn main() -> Result<()> {
                         }
 
                         if let Some(filenames) = config.whereabouts_sounds.get(*whereabouts_id) {
-                            let random_index = rng.generate_range(0..filenames.len());
-                            let filename = &filenames[random_index];
-                            player.play(filename)?;
+                            let filename = choose_random_element(filenames, &mut rng);
+                            player.play(&filename)?;
                         }
                     }
 
@@ -123,4 +122,10 @@ fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+fn choose_random_element(elements: &Vec<String>, rng: &mut WyRand) -> String {
+    let random_index = rng.generate_range(0..elements.len());
+    let element = &elements[random_index];
+    element.to_owned()
 }
