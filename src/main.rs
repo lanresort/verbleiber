@@ -74,7 +74,7 @@ fn main() -> Result<()> {
     for msg in rx.iter() {
         match msg {
             UserInput::User(tag) => {
-                println!("User tag ID: {tag}");
+                println!("Tag read: {tag}");
 
                 match config.tags_to_user_ids.get(&tag) {
                     Some(user_id) => {
@@ -98,13 +98,13 @@ fn main() -> Result<()> {
                 // been specified.
                 if let Some(user_id) = current_user_id {
                     if let Some(whereabouts_id) = &config.buttons_to_whereabouts.get(&button_name) {
-                        println!("Submitting whereabouts for user {user_id}.");
+                        println!("Submitting whereabouts for user {user_id} ...");
 
                         let response = api_client.update_status(&user_id, whereabouts_id);
                         match response {
-                            Ok(_) => println!("Request successfully submitted."),
+                            Ok(_) => println!("Status successfully updated."),
                             Err(e) => {
-                                println!("Request failed.\n{e}");
+                                println!("Status update failed.\n{e}");
                                 player.play("oh-nein-netzwerkfehler.ogg")?;
                             }
                         }
