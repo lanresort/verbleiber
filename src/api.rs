@@ -56,13 +56,13 @@ impl ApiClient {
     }
 
     pub(crate) fn update_status(&self, user_id: &str, whereabouts_id: &str) -> Result<()> {
-        let url = format!("{}/set_status", &self.base_url);
-        let authz_value = format!("Bearer {}", &self.auth_token);
+        let url = format!("{}/statuses/{}", self.base_url, user_id);
+        let authz_value = format!("Bearer {}", self.auth_token);
 
         ureq::post(&url)
             .timeout(self.timeout)
             .set("Authorization", &authz_value)
-            .send_json(ureq::json!({"user_id": &user_id, "whereabouts_id": whereabouts_id}))
+            .send_json(ureq::json!({"whereabouts_id": whereabouts_id}))
             .map_err(|e| anyhow!("Network error: {}", e))
             .map(|_| Ok(()))?
     }
