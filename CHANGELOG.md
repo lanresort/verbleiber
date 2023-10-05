@@ -14,6 +14,9 @@
 - Obtain filename of sound to play for a user from tag details returned
   by the API. This obsoletes the configuration table `user_sounds`.
 
+- Included party ID in configuration as it became a mandatory parameter
+  for the endpoint which sets the status.
+
 
 ## 0.3.0 (2023-05-05)
 

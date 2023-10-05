@@ -13,6 +13,7 @@ use crate::config::ApiConfig;
 pub(crate) struct ApiClient {
     pub base_url: String,
     pub auth_token: String,
+    pub party_id: String,
     pub timeout: Duration,
 }
 
@@ -34,6 +35,7 @@ impl ApiClient {
         Self {
             base_url: config.base_url.to_owned(),
             auth_token: config.auth_token.to_owned(),
+            party_id: config.party_id.to_owned(),
             timeout: Duration::from_secs(config.timeout_in_seconds),
         }
     }
@@ -56,7 +58,7 @@ impl ApiClient {
     }
 
     pub(crate) fn update_status(&self, user_id: &str, whereabouts_id: &str) -> Result<()> {
-        let url = format!("{}/statuses/{}", self.base_url, user_id);
+        let url = format!("{}/statuses/{}/{}", self.base_url, user_id, self.party_id);
         let authz_value = format!("Bearer {}", self.auth_token);
 
         ureq::post(&url)

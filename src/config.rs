@@ -23,6 +23,7 @@ pub(crate) struct Config {
 pub(crate) struct ApiConfig {
     pub base_url: String,
     pub auth_token: String,
+    pub party_id: String,
     pub timeout_in_seconds: u64,
 }
 
