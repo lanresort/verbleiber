@@ -84,10 +84,10 @@ fn is_key_released(event: InputEvent) -> bool {
 
 fn find_button_for_key(key: Key) -> Option<UserInput> {
     match key {
-        Key::BTN_TOP => Some("button1".to_string()),
-        Key::BTN_TRIGGER => Some("button2".to_string()),
+        Key::BTN_TRIGGER => Some("button1".to_string()),
+        Key::BTN_THUMB => Some("button2".to_string()),
         Key::BTN_THUMB2 => Some("button3".to_string()),
-        Key::BTN_THUMB => Some("button4".to_string()),
+        Key::BTN_TOP => Some("button4".to_string()),
         _ => None,
     }
     .map(UserInput::Button)

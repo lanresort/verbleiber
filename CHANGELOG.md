@@ -17,6 +17,9 @@
 - Included party ID in configuration as it became a mandatory parameter
   for the endpoint which sets the status.
 
+- Switched button mappings to match what some sources report as usual
+  gamepad button order.
+
 
 ## 0.3.0 (2023-05-05)
 
