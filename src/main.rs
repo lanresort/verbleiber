@@ -82,7 +82,7 @@ fn main() -> Result<()> {
                         Some(details) => {
                             println!(
                                 "User for tag {}: {} (ID: {})",
-                                details.tag,
+                                details.identifier,
                                 details.user.screen_name.unwrap_or("<nameless>".to_string()),
                                 details.user.id
                             );
