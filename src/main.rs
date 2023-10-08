@@ -112,16 +112,17 @@ fn main() -> Result<()> {
                 // Submit if user has identified; ignore if no user has
                 // been specified.
                 if let Some(user_id) = current_user_id {
-                    if let Some(whereabouts_id) = &config.buttons_to_whereabouts.get(&button_name) {
+                    if let Some(whereabouts_name) = &config.buttons_to_whereabouts.get(&button_name)
+                    {
                         println!("Submitting whereabouts for user {user_id} ...");
 
-                        let response = api_client.update_status(&user_id, whereabouts_id);
+                        let response = api_client.update_status(&user_id, whereabouts_name);
                         match response {
                             Ok(_) => {
                                 println!("Status successfully updated.");
 
                                 if let Some(filenames) =
-                                    config.whereabouts_sounds.get(*whereabouts_id)
+                                    config.whereabouts_sounds.get(*whereabouts_name)
                                 {
                                     let filename = choose_random_element(filenames, &mut rng);
                                     player.play(&filename)?;

@@ -20,6 +20,9 @@
 - Switched button mappings to match what some sources report as usual
   gamepad button order.
 
+- Replaced whereabouts IDs with human-readable whereabouts names in
+  configuration and API protocol.
+
 - Updated clap to v4.4.6.
 
 - Updated flume to v0.11.0.
