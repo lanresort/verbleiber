@@ -14,7 +14,7 @@ keywords = ["presence", "rfid"]
 anyhow = "1.0"
 clap = { version = "4.4.6", default-features = false, features = ["derive", "error-context", "help", "std", "usage"] }
 evdev = { version = "0.12.1" }
-flume = "0.10"
+flume = "0.11.0"
 nanorand = "0.7.0"
 rodio = { version = "0.17.1", default-features = false, features = ["vorbis"] }
 serde = { version = "1.0", features = ["derive"] }

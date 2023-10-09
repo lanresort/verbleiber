@@ -22,6 +22,8 @@
 
 - Updated clap to v4.4.6.
 
+- Updated flume to v0.11.0.
+
 
 ## 0.3.0 (2023-05-05)
 
