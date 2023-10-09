@@ -18,5 +18,5 @@ flume = "0.11.0"
 nanorand = "0.7.0"
 rodio = { version = "0.17.1", default-features = false, features = ["vorbis"] }
 serde = { version = "1.0", features = ["derive"] }
-ureq = { version = "2.8.0", features = ["json"] }
 toml = "0.8.2"
+ureq = { version = "2.8.0", features = ["json"] }
