@@ -24,6 +24,8 @@
 
 - Updated flume to v0.11.0.
 
+- Updated ureq to v2.8.0.
+
 
 ## 0.3.0 (2023-05-05)
 
