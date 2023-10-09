@@ -20,6 +20,8 @@
 - Switched button mappings to match what some sources report as usual
   gamepad button order.
 
+- Updated clap to v4.4.6.
+
 
 ## 0.3.0 (2023-05-05)
 
