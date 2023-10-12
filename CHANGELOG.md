@@ -23,6 +23,8 @@
 - Replaced whereabouts IDs with human-readable whereabouts names in
   configuration and API protocol.
 
+- Added proper logging.
+
 - Updated clap to v4.4.6.
 
 - Updated flume to v0.11.0.

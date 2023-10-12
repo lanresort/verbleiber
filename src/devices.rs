@@ -11,7 +11,7 @@ pub(crate) fn open_input_device_or_exit(device_name: String, label: String) -> R
     match open_input_device(device_name, label) {
         Ok(device) => Ok(device),
         Err(e) => {
-            eprintln!("Error: {}", e);
+            log::error!("{}", e);
             exit(1);
         }
     }
@@ -21,7 +21,7 @@ fn open_input_device(device_name: String, label: String) -> Result<Device, Strin
     Device::open(device_name)
         .map_err(|e| format!("Could not open {}: {}", label, e))
         .and_then(|mut device| {
-            println!(
+            log::info!(
                 "Opened {} \"{}\".",
                 label,
                 device.name().unwrap_or("unnamed device")
@@ -37,6 +37,6 @@ fn grab_reader_input_device(device: &mut Device, label: String) -> Result<(), St
         .grab()
         .map_err(|e| format!("Could not get exclusive access to {}: {}", label, e))
         .map(|()| {
-            println!("Successfully obtained exclusive access to {}.", label);
+            log::info!("Successfully obtained exclusive access to {}.", label);
         })
 }

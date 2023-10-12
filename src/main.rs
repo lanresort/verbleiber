@@ -23,6 +23,8 @@ use crate::userinput::{StringReader, UserInput};
 // TODO: Replace `.unwrap()` with `?` in threads.
 
 fn main() -> Result<()> {
+    simple_logger::init_with_level(log::Level::Info)?;
+
     let args = cli::parse_args();
 
     let config = config::load_config(&args.config_filename)?;
@@ -74,13 +76,13 @@ fn main() -> Result<()> {
     for msg in rx.iter() {
         match msg {
             UserInput::User(tag) => {
-                println!("Tag read: {tag}");
+                log::info!("Tag read: {tag}");
 
-                println!("Requesting details for tag {} ...", tag);
+                log::info!("Requesting details for tag {} ...", tag);
                 match api_client.get_tag_details(&tag) {
                     Ok(details) => match details {
                         Some(details) => {
-                            println!(
+                            log::info!(
                                 "User for tag {}: {} (ID: {})",
                                 details.identifier,
                                 details.user.screen_name.unwrap_or("<nameless>".to_string()),
@@ -92,34 +94,34 @@ fn main() -> Result<()> {
                                 player.play(&filename)?;
                             }
 
-                            println!("Awaiting whereabouts for user {user_id} ...");
+                            log::info!("Awaiting whereabouts for user {user_id} ...");
                             current_user_id = Some(user_id.to_string());
                         }
                         None => {
-                            println!("Unknown user tag: {tag}");
+                            log::info!("Unknown user tag: {tag}");
                             player.play("unknown_user_tag.ogg")?;
                         }
                     },
                     Err(e) => {
-                        println!("Requesting tag details failed.\n{e}");
+                        log::info!("Requesting tag details failed.\n{e}");
                         player.play("oh-nein-netzwerkfehler.ogg")?;
                     }
                 };
             }
             UserInput::Button(button_name) => {
-                println!("Button pressed: {button_name}");
+                log::info!("Button pressed: {button_name}");
 
                 // Submit if user has identified; ignore if no user has
                 // been specified.
                 if let Some(user_id) = current_user_id {
                     if let Some(whereabouts_name) = &config.buttons_to_whereabouts.get(&button_name)
                     {
-                        println!("Submitting whereabouts for user {user_id} ...");
+                        log::info!("Submitting whereabouts for user {user_id} ...");
 
                         let response = api_client.update_status(&user_id, whereabouts_name);
                         match response {
                             Ok(_) => {
-                                println!("Status successfully updated.");
+                                log::info!("Status successfully updated.");
 
                                 if let Some(filenames) =
                                     config.whereabouts_sounds.get(*whereabouts_name)
@@ -129,7 +131,7 @@ fn main() -> Result<()> {
                                 }
                             }
                             Err(e) => {
-                                println!("Status update failed.\n{e}");
+                                log::info!("Status update failed.\n{e}");
                                 player.play("oh-nein-netzwerkfehler.ogg")?;
                             }
                         }
