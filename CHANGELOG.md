@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 0.5.0 (unreleased)
+
+
 ## 0.4.0 (2023-10-12)
 
 - Replaced full URL API config property `url` with new property
