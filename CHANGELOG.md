@@ -11,6 +11,8 @@
 
 - Updated rodio to v0.17.3.
 
+- Updated simple_logger to v4.3.3.
+
 
 ## 0.4.0 (2023-10-12)
 
