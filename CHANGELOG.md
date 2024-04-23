@@ -5,6 +5,8 @@
 
 - Raised minimum supported rust version to 1.76.0.
 
+- Updated clap to v4.5.4.
+
 
 ## 0.4.0 (2023-10-12)
 
