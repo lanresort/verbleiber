@@ -7,6 +7,8 @@
 
 - Updated clap to v4.5.4.
 
+- Updated log to v0.4.21.
+
 
 ## 0.4.0 (2023-10-12)
 
