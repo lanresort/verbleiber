@@ -9,6 +9,8 @@
 
 - Updated log to v0.4.21.
 
+- Updated rodio to v0.17.3.
+
 
 ## 0.4.0 (2023-10-12)
 
