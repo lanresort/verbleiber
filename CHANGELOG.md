@@ -9,7 +9,7 @@
 
 - Updated evdev to v0.12.2.
 
-- Updated log to v0.4.21.
+- Updated log to v0.4.22.
 
 - Updated rodio to v0.17.3.
 
