@@ -13,7 +13,6 @@ use crate::config::ApiConfig;
 pub(crate) struct ApiClient {
     pub base_url: String,
     pub auth_token: String,
-    pub party_id: String,
     pub timeout: Duration,
 }
 
@@ -35,7 +34,6 @@ impl ApiClient {
         Self {
             base_url: config.base_url.to_owned(),
             auth_token: config.auth_token.to_owned(),
-            party_id: config.party_id.to_owned(),
             timeout: Duration::from_secs(config.timeout_in_seconds),
         }
     }
@@ -57,7 +55,12 @@ impl ApiClient {
         }
     }
 
-    pub(crate) fn update_status(&self, user_id: &str, whereabouts_name: &str) -> Result<()> {
+    pub(crate) fn update_status(
+        &self,
+        user_id: &str,
+        party_id: &str,
+        whereabouts_name: &str,
+    ) -> Result<()> {
         let url = format!("{}/statuses", self.base_url);
         let authz_value = format!("Bearer {}", self.auth_token);
 
@@ -66,7 +69,7 @@ impl ApiClient {
             .set("Authorization", &authz_value)
             .send_json(ureq::json!({
                 "user_id": user_id,
-                "party_id": self.party_id,
+                "party_id": party_id,
                 "whereabouts_name": whereabouts_name,
             }))
             .map_err(|e| anyhow!("Network error: {}", e))

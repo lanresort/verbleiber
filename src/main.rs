@@ -118,7 +118,11 @@ fn main() -> Result<()> {
                     {
                         log::info!("Submitting whereabouts for user {user_id} ...");
 
-                        let response = api_client.update_status(&user_id, whereabouts_name);
+                        let response = api_client.update_status(
+                            &user_id,
+                            &config.api.party_id,
+                            whereabouts_name,
+                        );
                         match response {
                             Ok(_) => {
                                 log::info!("Status successfully updated.");
