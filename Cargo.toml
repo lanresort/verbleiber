@@ -21,4 +21,4 @@ rodio = { version = "0.19.0", default-features = false, features = ["vorbis"] }
 serde = { version = "1.0", features = ["derive"] }
 simple_logger = "5.0.0"
 toml = "0.8.17"
-ureq = { version = "2.9.6", features = ["json"] }
+ureq = { version = "2.10.0", features = ["json"] }
