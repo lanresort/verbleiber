@@ -146,7 +146,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn choose_random_element(elements: &Vec<String>, rng: &mut WyRand) -> String {
+fn choose_random_element(elements: &[String], rng: &mut WyRand) -> String {
     let random_index = rng.generate_range(0..elements.len());
     let element = &elements[random_index];
     element.to_owned()
