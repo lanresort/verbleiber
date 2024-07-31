@@ -3,6 +3,9 @@
 
 ## 0.5.0 (unreleased)
 
+- Changed way of passing user ID and party ID on status updates from
+  URL parameters to JSON payload.
+
 - Raised minimum supported Rust version to 1.78.0.
 
 - Updated clap to v4.5.11.
