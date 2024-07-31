@@ -5,7 +5,7 @@
 
 - Raised minimum supported Rust version to 1.78.0.
 
-- Updated clap to v4.5.4.
+- Updated clap to v4.5.11.
 
 - Updated log to v0.4.21.
 
