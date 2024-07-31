@@ -3,7 +3,8 @@
 
 ## 0.5.0 (unreleased)
 
-- Moved key `party_id` in configuration file to table `party`.
+- Moved key `party_id` and tables `buttons_to_whereabouts` and
+  `whereabouts_sounds` in configuration file to table `party`.
 
 - Changed way of passing user ID and party ID on status updates from
   URL parameters to JSON payload.

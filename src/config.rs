@@ -16,8 +16,6 @@ pub(crate) struct Config {
     pub sounds_path: PathBuf,
     pub api: ApiConfig,
     pub party: PartyConfig,
-    pub buttons_to_whereabouts: HashMap<String, String>,
-    pub whereabouts_sounds: HashMap<String, Vec<String>>,
 }
 
 #[derive(Deserialize)]
@@ -30,6 +28,8 @@ pub(crate) struct ApiConfig {
 #[derive(Deserialize)]
 pub(crate) struct PartyConfig {
     pub party_id: String,
+    pub buttons_to_whereabouts: HashMap<String, String>,
+    pub whereabouts_sounds: HashMap<String, Vec<String>>,
 }
 
 pub(crate) fn load_config(path: &Path) -> Result<Config> {

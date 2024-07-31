@@ -114,7 +114,8 @@ fn main() -> Result<()> {
                 // Submit if user has identified; ignore if no user has
                 // been specified.
                 if let Some(user_id) = current_user_id {
-                    if let Some(whereabouts_name) = &config.buttons_to_whereabouts.get(&button_name)
+                    if let Some(whereabouts_name) =
+                        &config.party.buttons_to_whereabouts.get(&button_name)
                     {
                         log::info!("Submitting whereabouts for user {user_id} ...");
 
@@ -128,7 +129,7 @@ fn main() -> Result<()> {
                                 log::info!("Status successfully updated.");
 
                                 if let Some(filenames) =
-                                    config.whereabouts_sounds.get(*whereabouts_name)
+                                    config.party.whereabouts_sounds.get(*whereabouts_name)
                                 {
                                     let filename = choose_random_element(filenames, &mut rng);
                                     player.play(&filename)?;

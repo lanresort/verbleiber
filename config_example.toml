@@ -10,13 +10,13 @@ timeout_in_seconds = 10
 [party]
 party_id = "YOUR-PARTY-ID-GOES-HERE"
 
-[buttons_to_whereabouts]
+[party.buttons_to_whereabouts]
 button1 = "orga-area"
 button2 = "on-the-move"
 button3 = "sleeping"
 button4 = "mystery-zone"
 
-[whereabouts_sounds]
+[party.whereabouts_sounds]
 "orga-area" = [
     "na-endlich.ogg",
     "willkommen-zurueck.ogg",
