@@ -13,7 +13,7 @@
 
 - Updated rodio to v0.19.0.
 
-- Updated simple_logger to v4.3.3.
+- Updated simple_logger to v5.0.0.
 
 - Updated toml to v0.8.12.
 
