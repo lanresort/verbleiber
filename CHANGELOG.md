@@ -11,7 +11,7 @@
 
 - Updated log to v0.4.22.
 
-- Updated rodio to v0.17.3.
+- Updated rodio to v0.19.0.
 
 - Updated simple_logger to v4.3.3.
 
