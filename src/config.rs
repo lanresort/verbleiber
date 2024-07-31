@@ -15,6 +15,7 @@ pub(crate) struct Config {
     pub button_input_device: String,
     pub sounds_path: PathBuf,
     pub api: ApiConfig,
+    pub party: PartyConfig,
     pub buttons_to_whereabouts: HashMap<String, String>,
     pub whereabouts_sounds: HashMap<String, Vec<String>>,
 }
@@ -23,8 +24,12 @@ pub(crate) struct Config {
 pub(crate) struct ApiConfig {
     pub base_url: String,
     pub auth_token: String,
-    pub party_id: String,
     pub timeout_in_seconds: u64,
+}
+
+#[derive(Deserialize)]
+pub(crate) struct PartyConfig {
+    pub party_id: String,
 }
 
 pub(crate) fn load_config(path: &Path) -> Result<Config> {

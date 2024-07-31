@@ -120,7 +120,7 @@ fn main() -> Result<()> {
 
                         let response = api_client.update_status(
                             &user_id,
-                            &config.api.party_id,
+                            &config.party.party_id,
                             whereabouts_name,
                         );
                         match response {

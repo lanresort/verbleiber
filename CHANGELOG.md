@@ -3,6 +3,8 @@
 
 ## 0.5.0 (unreleased)
 
+- Moved key `party_id` in configuration file to table `party`.
+
 - Changed way of passing user ID and party ID on status updates from
   URL parameters to JSON payload.
 
