@@ -15,7 +15,7 @@
 
 - Updated simple_logger to v5.0.0.
 
-- Updated toml to v0.8.12.
+- Updated toml to v0.8.17.
 
 - Updated ureq to v2.9.6.
 
