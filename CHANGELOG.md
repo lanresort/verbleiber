@@ -3,7 +3,7 @@
 
 ## 0.5.0 (unreleased)
 
-- Raised minimum supported rust version to 1.76.0.
+- Raised minimum supported Rust version to 1.78.0.
 
 - Updated clap to v4.5.4.
 
