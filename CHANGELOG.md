@@ -7,6 +7,8 @@
 
 - Updated clap to v4.5.11.
 
+- Updated evdev to v0.12.2.
+
 - Updated log to v0.4.21.
 
 - Updated rodio to v0.17.3.
