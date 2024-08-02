@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 0.6.0 (unreleased)
+
+
 ## 0.5.0 (2024-08-02)
 
 - Moved key `party_id` and tables `buttons_to_whereabouts` and
