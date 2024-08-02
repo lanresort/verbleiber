@@ -64,15 +64,22 @@ impl ApiClient {
         let url = format!("{}/statuses", self.base_url);
         let authz_value = format!("Bearer {}", self.auth_token);
 
-        ureq::post(&url)
+        match ureq::post(&url)
             .timeout(self.timeout)
             .set("Authorization", &authz_value)
             .send_json(ureq::json!({
                 "user_id": user_id,
                 "party_id": party_id,
                 "whereabouts_name": whereabouts_name,
-            }))
-            .map_err(|e| anyhow!("Network error: {}", e))
-            .map(|_| Ok(()))?
+            })) {
+            Ok(_) => Ok(()),
+            Err(Error::Status(code, response)) => Err(anyhow!(
+                "API error: {} {}: {}",
+                code,
+                response.status_text().to_string(),
+                response.into_string()?
+            )),
+            Err(e) => Err(anyhow!("Network error: {}", e)),
+        }
     }
 }
