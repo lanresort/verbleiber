@@ -4,9 +4,9 @@
  */
 
 use anyhow::{anyhow, Result};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::time::Duration;
-use ureq::{Agent, AgentBuilder, Error};
+use ureq::{Agent, Error};
 
 use crate::config::ApiConfig;
 
@@ -14,6 +14,13 @@ pub(crate) struct ApiClient {
     pub base_url: String,
     pub auth_token: String,
     agent: Agent,
+}
+
+#[derive(Debug, Serialize)]
+pub(crate) struct StatusUpdate {
+    pub user_id: String,
+    pub party_id: String,
+    pub whereabouts_name: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -34,23 +41,25 @@ impl ApiClient {
         Self {
             base_url: config.base_url.to_owned(),
             auth_token: config.auth_token.to_owned(),
-            agent: AgentBuilder::new()
-                .timeout(Duration::from_secs(config.timeout_in_seconds))
-                .build(),
+            agent: Agent::config_builder()
+                .timeout_global(Some(Duration::from_secs(config.timeout_in_seconds)))
+                .build()
+                .into(),
         }
     }
 
     pub(crate) fn get_tag_details(&self, tag: &str) -> Result<Option<TagDetails>> {
         let url = format!("{}/tags/{}", &self.base_url, tag);
         let authz_value = format!("Bearer {}", &self.auth_token);
-        let request = self.agent.get(&url).set("Authorization", &authz_value);
+        let request = self.agent.get(&url).header("Authorization", &authz_value);
 
         match request.call() {
-            Ok(response) => response
-                .into_json::<TagDetails>()
+            Ok(mut response) => response
+                .body_mut()
+                .read_json::<TagDetails>()
                 .map_err(|e| anyhow!("JSON error: {}", e))
                 .map(Some),
-            Err(Error::Status(404, _)) => Ok(None),
+            Err(Error::StatusCode(404)) => Ok(None),
             Err(e) => Err(anyhow!("Network error: {}", e)),
         }
     }
@@ -67,19 +76,14 @@ impl ApiClient {
         match self
             .agent
             .post(&url)
-            .set("Authorization", &authz_value)
-            .send_json(ureq::json!({
-                "user_id": user_id,
-                "party_id": party_id,
-                "whereabouts_name": whereabouts_name,
-            })) {
+            .header("Authorization", &authz_value)
+            .send_json(StatusUpdate {
+                user_id: user_id.to_string(),
+                party_id: party_id.to_string(),
+                whereabouts_name: whereabouts_name.to_string(),
+            }) {
             Ok(_) => Ok(()),
-            Err(Error::Status(code, response)) => Err(anyhow!(
-                "API error: {} {}: {}",
-                code,
-                response.status_text().to_string(),
-                response.into_string()?
-            )),
+            Err(Error::StatusCode(code)) => Err(anyhow!("API error: {}", code)),
             Err(e) => Err(anyhow!("Network error: {}", e)),
         }
     }
