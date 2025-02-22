@@ -20,6 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: dtolnay/rust-toolchain@stable
+
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install --assume-yes libasound2-dev
 
