@@ -28,7 +28,7 @@ impl StringReader {
             return None;
         }
 
-        if let EventSummary::Key(_, key_code, 1) = event.destructure() {
+        if let EventSummary::Key(_, key_code, 0) = event.destructure() {
             match key_code {
                 KeyCode::KEY_ENTER => {
                     let input = &self.chars_read.as_str().to_owned();
