@@ -2,8 +2,8 @@
 name = "verbleiber"
 version = "0.6.0"
 authors = ["Jochen Kupperschmidt"]
-edition = "2021"
-rust-version = "1.76.0"
+edition = "2024"
+rust-version = "1.85.0"
 description = "Log organizer whereabouts on events via RFID tags and buttons"
 readme = "README.md"
 repository = "https://github.com/lanresort/verbleiber"
