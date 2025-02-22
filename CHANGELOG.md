@@ -7,6 +7,8 @@
 
 - Updated flume to v0.11.1.
 
+- Updated log to v0.4.26.
+
 
 ## 0.5.0 (2024-08-02)
 
