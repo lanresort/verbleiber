@@ -3,6 +3,8 @@
 
 ## 0.6.0 (unreleased)
 
+- Updated clap to v4.5.30.
+
 - Updated evdev to v0.13.0.
 
 - Updated flume to v0.11.1.
