@@ -5,6 +5,8 @@
 
 - Updated evdev to v0.13.0.
 
+- Updated flume to v0.11.1.
+
 
 ## 0.5.0 (2024-08-02)
 
