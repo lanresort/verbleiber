@@ -3,6 +3,8 @@
 
 ## 0.6.0 (unreleased)
 
+- Updated evdev to v0.13.0.
+
 
 ## 0.5.0 (2024-08-02)
 

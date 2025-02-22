@@ -3,7 +3,7 @@
  * License: MIT
  */
 
-use evdev::{EventType, InputEvent, InputEventKind, Key};
+use evdev::{EventSummary, EventType, InputEvent, KeyCode};
 
 use crate::model::UserId;
 
@@ -28,16 +28,16 @@ impl StringReader {
             return None;
         }
 
-        if let InputEventKind::Key(key) = event.kind() {
-            match key {
-                Key::KEY_ENTER => {
+        if let EventSummary::Key(_, key_code, 1) = event.destructure() {
+            match key_code {
+                KeyCode::KEY_ENTER => {
                     let input = &self.chars_read.as_str().to_owned();
 
                     self.chars_read.clear();
 
                     Some(input.to_owned())
                 }
-                key => match get_char(key) {
+                key_code => match get_char(key_code) {
                     Some(ch) => {
                         self.chars_read.push(ch);
                         None
@@ -51,18 +51,18 @@ impl StringReader {
     }
 }
 
-fn get_char(key: Key) -> Option<char> {
-    match key {
-        Key::KEY_1 => Some('1'),
-        Key::KEY_2 => Some('2'),
-        Key::KEY_3 => Some('3'),
-        Key::KEY_4 => Some('4'),
-        Key::KEY_5 => Some('5'),
-        Key::KEY_6 => Some('6'),
-        Key::KEY_7 => Some('7'),
-        Key::KEY_8 => Some('8'),
-        Key::KEY_9 => Some('9'),
-        Key::KEY_0 => Some('0'),
+fn get_char(key_code: KeyCode) -> Option<char> {
+    match key_code {
+        KeyCode::KEY_1 => Some('1'),
+        KeyCode::KEY_2 => Some('2'),
+        KeyCode::KEY_3 => Some('3'),
+        KeyCode::KEY_4 => Some('4'),
+        KeyCode::KEY_5 => Some('5'),
+        KeyCode::KEY_6 => Some('6'),
+        KeyCode::KEY_7 => Some('7'),
+        KeyCode::KEY_8 => Some('8'),
+        KeyCode::KEY_9 => Some('9'),
+        KeyCode::KEY_0 => Some('0'),
         _ => None,
     }
 }
@@ -72,8 +72,8 @@ pub(crate) fn handle_button_press(event: InputEvent) -> Option<UserInput> {
         return None;
     }
 
-    match event.kind() {
-        InputEventKind::Key(key) => find_button_for_key(key),
+    match event.destructure() {
+        EventSummary::Key(_, key_code, _) => find_button_for_key_code(key_code),
         _ => None,
     }
 }
@@ -82,12 +82,12 @@ fn is_key_released(event: InputEvent) -> bool {
     event.event_type() == EventType::KEY && event.value() == 0
 }
 
-fn find_button_for_key(key: Key) -> Option<UserInput> {
-    match key {
-        Key::BTN_TRIGGER => Some("button1".to_string()),
-        Key::BTN_THUMB => Some("button2".to_string()),
-        Key::BTN_THUMB2 => Some("button3".to_string()),
-        Key::BTN_TOP => Some("button4".to_string()),
+fn find_button_for_key_code(key_code: KeyCode) -> Option<UserInput> {
+    match key_code {
+        KeyCode::BTN_TRIGGER => Some("button1".to_string()),
+        KeyCode::BTN_THUMB => Some("button2".to_string()),
+        KeyCode::BTN_THUMB2 => Some("button3".to_string()),
+        KeyCode::BTN_TOP => Some("button4".to_string()),
         _ => None,
     }
     .map(UserInput::Button)
