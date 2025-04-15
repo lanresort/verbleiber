@@ -18,7 +18,7 @@ mod userinput;
 
 use crate::api::ApiClient;
 use crate::model::UserId;
-use crate::userinput::{StringReader, UserInput};
+use crate::userinput::{Button, StringReader, UserInput};
 
 // TODO: Replace `.unwrap()` with `?` in threads.
 
@@ -63,7 +63,8 @@ fn main() -> Result<()> {
     // buttons
     thread::spawn(move || loop {
         for event in button_input_device.fetch_events().unwrap() {
-            if let Some(button) = userinput::handle_button_press(event) {
+            if let Some(button_pressed) = userinput::handle_button_press(event) {
+                let button = UserInput::Button(button_pressed);
                 tx2.send(button).unwrap()
             }
         }
@@ -108,8 +109,15 @@ fn main() -> Result<()> {
                     }
                 };
             }
-            UserInput::Button(button_name) => {
-                log::info!("Button pressed: {button_name}");
+            UserInput::Button(button) => {
+                log::info!("Button pressed: {:?}", button);
+
+                let button_name = match button {
+                    Button::Button1 => "button1".to_string(),
+                    Button::Button2 => "button2".to_string(),
+                    Button::Button3 => "button3".to_string(),
+                    Button::Button4 => "button4".to_string(),
+                };
 
                 // Submit if user has identified; ignore if no user has
                 // been specified.

@@ -9,7 +9,7 @@ use crate::model::UserId;
 
 pub(crate) enum UserInput {
     User(UserId),
-    Button(String),
+    Button(Button),
 }
 
 pub(crate) struct StringReader {
@@ -67,7 +67,7 @@ fn get_char(key_code: KeyCode) -> Option<char> {
     }
 }
 
-pub(crate) fn handle_button_press(event: InputEvent) -> Option<UserInput> {
+pub(crate) fn handle_button_press(event: InputEvent) -> Option<Button> {
     if !is_key_released(event) {
         return None;
     }
@@ -82,13 +82,20 @@ fn is_key_released(event: InputEvent) -> bool {
     event.event_type() == EventType::KEY && event.value() == 0
 }
 
-fn find_button_for_key_code(key_code: KeyCode) -> Option<UserInput> {
+fn find_button_for_key_code(key_code: KeyCode) -> Option<Button> {
     match key_code {
-        KeyCode::BTN_TRIGGER => Some("button1".to_string()),
-        KeyCode::BTN_THUMB => Some("button2".to_string()),
-        KeyCode::BTN_THUMB2 => Some("button3".to_string()),
-        KeyCode::BTN_TOP => Some("button4".to_string()),
+        KeyCode::BTN_TRIGGER => Some(Button::Button1),
+        KeyCode::BTN_THUMB => Some(Button::Button2),
+        KeyCode::BTN_THUMB2 => Some(Button::Button3),
+        KeyCode::BTN_TOP => Some(Button::Button4),
         _ => None,
     }
-    .map(UserInput::Button)
+}
+
+#[derive(Debug)]
+pub(crate) enum Button {
+    Button1,
+    Button2,
+    Button3,
+    Button4,
 }
