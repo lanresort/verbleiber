@@ -44,7 +44,7 @@ fn main() -> Result<()> {
     let sounds_path = config.sounds_path.clone();
     let player = audio::Player::new(sounds_path);
 
-    let (tx1, rx): (Sender<UserInput>, Receiver<UserInput>) = flume::unbounded();
+    let (tx1, rx): (Sender<Event>, Receiver<Event>) = flume::unbounded();
     let tx2 = tx1.clone();
 
     // RFID/barcode reader
@@ -52,9 +52,11 @@ fn main() -> Result<()> {
         let mut string_reader = StringReader::new();
         loop {
             for event in reader_input_device.fetch_events().unwrap() {
-                if let Some(s) = string_reader.handle_event(event) {
-                    let user = UserInput::User(s.to_string());
-                    tx1.send(user).unwrap();
+                if let Some(value) = string_reader.handle_event(event) {
+                    let event = Event::TagRead {
+                        tag: value.to_string(),
+                    };
+                    tx1.send(event).unwrap();
                 }
             }
         }
@@ -63,9 +65,9 @@ fn main() -> Result<()> {
     // buttons
     thread::spawn(move || loop {
         for event in button_input_device.fetch_events().unwrap() {
-            if let Some(button_pressed) = userinput::handle_button_press(event) {
-                let button = UserInput::Button(button_pressed);
-                tx2.send(button).unwrap()
+            if let Some(button) = userinput::handle_button_press(event) {
+                let event = Event::ButtonPressed { button };
+                tx2.send(event).unwrap()
             }
         }
     });
@@ -76,7 +78,7 @@ fn main() -> Result<()> {
 
     for msg in rx.iter() {
         match msg {
-            UserInput::User(tag) => {
+            Event::TagRead { tag } => {
                 log::info!("Tag read: {tag}");
 
                 log::info!("Requesting details for tag {} ...", tag);
@@ -109,7 +111,7 @@ fn main() -> Result<()> {
                     }
                 };
             }
-            UserInput::Button(button) => {
+            Event::ButtonPressed { button } => {
                 log::info!("Button pressed: {:?}", button);
 
                 let button_name = match button {
@@ -159,9 +161,9 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-enum UserInput {
-    User(UserId),
-    Button(Button),
+enum Event {
+    TagRead { tag: String },
+    ButtonPressed { button: Button },
 }
 
 fn choose_random_element(elements: &[String], rng: &mut WyRand) -> String {
