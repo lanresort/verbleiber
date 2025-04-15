@@ -18,7 +18,7 @@ mod userinput;
 
 use crate::api::ApiClient;
 use crate::model::UserId;
-use crate::userinput::{Button, StringReader, UserInput};
+use crate::userinput::{Button, StringReader};
 
 // TODO: Replace `.unwrap()` with `?` in threads.
 
@@ -157,6 +157,11 @@ fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+enum UserInput {
+    User(UserId),
+    Button(Button),
 }
 
 fn choose_random_element(elements: &[String], rng: &mut WyRand) -> String {

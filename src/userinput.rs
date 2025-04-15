@@ -5,13 +5,6 @@
 
 use evdev::{EventSummary, EventType, InputEvent, KeyCode};
 
-use crate::model::UserId;
-
-pub(crate) enum UserInput {
-    User(UserId),
-    Button(Button),
-}
-
 pub(crate) struct StringReader {
     chars_read: String,
 }
