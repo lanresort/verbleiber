@@ -3,6 +3,9 @@
 
 ## 0.6.0 (unreleased)
 
+- Renamed configuration property `auth_token` to `api_token` in section
+  `api`.
+
 - Allowed disabling of TLS verification (useful for self-signed
   certificates during development).
 

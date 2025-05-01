@@ -13,7 +13,7 @@ use crate::config::ApiConfig;
 
 pub(crate) struct ApiClient {
     pub base_url: String,
-    pub auth_token: String,
+    pub api_token: String,
     agent: Agent,
 }
 
@@ -41,7 +41,7 @@ impl ApiClient {
     pub(crate) fn new(config: &ApiConfig) -> Self {
         Self {
             base_url: config.base_url.to_owned(),
-            auth_token: config.auth_token.to_owned(),
+            api_token: config.api_token.to_owned(),
             agent: Agent::config_builder()
                 .timeout_global(Some(Duration::from_secs(config.timeout_in_seconds)))
                 .tls_config(
@@ -56,7 +56,7 @@ impl ApiClient {
 
     pub(crate) fn get_tag_details(&self, tag: &str) -> Result<Option<TagDetails>> {
         let url = format!("{}/tags/{}", &self.base_url, tag);
-        let authz_value = format!("Bearer {}", &self.auth_token);
+        let authz_value = format!("Bearer {}", &self.api_token);
         let request = self.agent.get(&url).header("Authorization", &authz_value);
 
         match request.call() {
@@ -77,7 +77,7 @@ impl ApiClient {
         whereabouts_name: &str,
     ) -> Result<()> {
         let url = format!("{}/statuses", self.base_url);
-        let authz_value = format!("Bearer {}", self.auth_token);
+        let authz_value = format!("Bearer {}", self.api_token);
 
         match self
             .agent

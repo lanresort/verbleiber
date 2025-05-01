@@ -21,7 +21,7 @@ pub(crate) struct Config {
 #[derive(Deserialize)]
 pub(crate) struct ApiConfig {
     pub base_url: String,
-    pub auth_token: String,
+    pub api_token: String,
     pub tls_verification: bool,
     pub timeout_in_seconds: u64,
 }
