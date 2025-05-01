@@ -8,6 +8,9 @@
 
 - Added configuration property `client_token` in section `api`.
 
+- Added header `x-whereabouts-client-token` to status update requests to
+  comply with the client-aware whereabouts API.
+
 - Allowed disabling of TLS verification (useful for self-signed
   certificates during development).
 

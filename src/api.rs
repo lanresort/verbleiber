@@ -14,6 +14,7 @@ use crate::config::ApiConfig;
 pub(crate) struct ApiClient {
     pub base_url: String,
     pub api_token: String,
+    pub client_token: String,
     agent: Agent,
 }
 
@@ -42,6 +43,7 @@ impl ApiClient {
         Self {
             base_url: config.base_url.to_owned(),
             api_token: config.api_token.to_owned(),
+            client_token: config.client_token.to_owned(),
             agent: Agent::config_builder()
                 .timeout_global(Some(Duration::from_secs(config.timeout_in_seconds)))
                 .tls_config(
@@ -83,6 +85,7 @@ impl ApiClient {
             .agent
             .post(&url)
             .header("Authorization", &authz_value)
+            .header("x-whereabouts-client-token", &self.client_token)
             .send_json(StatusUpdate {
                 user_id: user_id.to_string(),
                 party_id: party_id.to_string(),
