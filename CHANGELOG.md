@@ -9,7 +9,7 @@
 
 - Updated flume to v0.11.1.
 
-- Updated log to v0.4.26.
+- Updated log to v0.4.27.
 
 - Updated rodio to v0.20.1.
 
