@@ -11,6 +11,8 @@
 - Added header `x-whereabouts-client-token` to status update requests to
   comply with the client-aware whereabouts API.
 
+- Added client sign-on on application start.
+
 - Allowed disabling of TLS verification (useful for self-signed
   certificates during development).
 

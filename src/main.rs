@@ -76,6 +76,8 @@ fn main() -> Result<()> {
 
     let api_client = ApiClient::new(&config.api);
 
+    sign_on(&api_client, &player)?;
+
     for msg in rx.iter() {
         match msg {
             Event::TagRead { tag } => {
@@ -164,6 +166,18 @@ fn main() -> Result<()> {
 enum Event {
     TagRead { tag: String },
     ButtonPressed { button: Button },
+}
+
+fn sign_on(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
+    log::info!("Signing on ...");
+    match api_client.sign_on() {
+        Ok(()) => log::info!("Signed on."),
+        Err(e) => {
+            log::info!("Signing on failed.\n{e}");
+            player.play("oh-nein-netzwerkfehler.ogg")?;
+        }
+    }
+    Ok(())
 }
 
 fn choose_random_element(elements: &[String], rng: &mut WyRand) -> String {
