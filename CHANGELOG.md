@@ -13,7 +13,7 @@
 
 - Updated rodio to v0.20.1.
 
-- Updated toml to v0.8.20.
+- Updated toml to v0.8.22.
 
 - Updated ureq to v3.0.6.
 
