@@ -6,6 +6,7 @@
 use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
+use ureq::tls::TlsConfig;
 use ureq::{Agent, Error};
 
 use crate::config::ApiConfig;
@@ -43,6 +44,11 @@ impl ApiClient {
             auth_token: config.auth_token.to_owned(),
             agent: Agent::config_builder()
                 .timeout_global(Some(Duration::from_secs(config.timeout_in_seconds)))
+                .tls_config(
+                    TlsConfig::builder()
+                        .disable_verification(config.tls_verification)
+                        .build(),
+                )
                 .build()
                 .into(),
         }

@@ -3,6 +3,9 @@
 
 ## 0.6.0 (unreleased)
 
+- Allowed disabling of TLS verification (useful for self-signed
+  certificates during development).
+
 - Raised minimum supported Rust version to 1.85.0.
 
 - Switched to Rust edition 2024.
