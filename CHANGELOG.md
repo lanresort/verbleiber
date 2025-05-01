@@ -3,6 +3,10 @@
 
 ## 0.6.0 (unreleased)
 
+- Raised minimum supported Rust version to 1.85.0.
+
+- Switched to Rust edition 2024.
+
 - Updated clap to v4.5.37.
 
 - Updated evdev to v0.13.1.
