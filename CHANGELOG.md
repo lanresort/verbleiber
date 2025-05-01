@@ -5,7 +5,7 @@
 
 - Updated clap to v4.5.37.
 
-- Updated evdev to v0.13.0.
+- Updated evdev to v0.13.1.
 
 - Updated flume to v0.11.1.
 
