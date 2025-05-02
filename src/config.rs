@@ -23,7 +23,7 @@ pub(crate) struct ApiConfig {
     pub base_url: String,
     pub api_token: String,
     pub client_token: String,
-    pub tls_verification: bool,
+    pub tls_verify: bool,
     pub timeout_in_seconds: u64,
 }
 

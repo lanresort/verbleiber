@@ -3,6 +3,8 @@
 
 ## 0.6.1 (unreleased)
 
+- Renamed configuration property `tls_verification` to `tls_verify`.
+
 
 ## 0.6.0 (2025-05-02)
 

@@ -48,7 +48,7 @@ impl ApiClient {
                 .timeout_global(Some(Duration::from_secs(config.timeout_in_seconds)))
                 .tls_config(
                     TlsConfig::builder()
-                        .disable_verification(config.tls_verification)
+                        .disable_verification(config.tls_verify)
                         .build(),
                 )
                 .build()
