@@ -2,6 +2,6 @@
 
 # Build binary
 
-IMAGE=ghcr.io/homeworkprod/rust-build-containers:rust-1.85.0-alsa
+IMAGE=ghcr.io/homeworkprod/rust-build-containers:rust-1.86.0-alsa
 
 docker run --rm --user "$(id -u)":"$(id -g)" -v "$PWD":/usr/src/myapp -w /usr/src/myapp $IMAGE cargo build --release
