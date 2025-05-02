@@ -5,6 +5,8 @@
 
 - Renamed configuration property `tls_verification` to `tls_verify`.
 
+- Fixed unintentional inversion of TLS verification configuration flag.
+
 
 ## 0.6.0 (2025-05-02)
 
