@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 0.6.1 (unreleased)
+
+
 ## 0.6.0 (2025-05-02)
 
 - Renamed configuration property `auth_token` to `api_token` in section
