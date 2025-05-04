@@ -129,7 +129,9 @@ fn main() -> Result<()> {
                     if let Some(whereabouts_name) =
                         &config.party.buttons_to_whereabouts.get(&button_name)
                     {
-                        log::info!("Submitting whereabouts for user {user_id} ...");
+                        log::info!(
+                            "Submitting whereabouts for user {user_id} -> {whereabouts_name} ..."
+                        );
 
                         let response = api_client.update_status(
                             &user_id,
