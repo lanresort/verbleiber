@@ -4,6 +4,7 @@
  */
 
 use anyhow::Result;
+use ctrlc;
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
 use std::thread;
@@ -46,6 +47,13 @@ fn main() -> Result<()> {
 
     let (tx1, rx): (Sender<Event>, Receiver<Event>) = flume::unbounded();
     let tx2 = tx1.clone();
+    let tx3 = tx1.clone();
+
+    ctrlc::set_handler(move || {
+        tx3.send(Event::ShutdownRequested)
+            .expect("Could not send shutdown signal")
+    })
+    .expect("Could not set Ctrl-C handler");
 
     // RFID/barcode reader
     thread::spawn(move || {
@@ -159,8 +167,14 @@ fn main() -> Result<()> {
                     current_user_id = None; // reset
                 }
             }
+            Event::ShutdownRequested => {
+                log::info!("Shutdown requested.");
+                break;
+            }
         }
     }
+
+    log::info!("Shutting down ...");
 
     Ok(())
 }
@@ -168,6 +182,7 @@ fn main() -> Result<()> {
 enum Event {
     TagRead { tag: String },
     ButtonPressed { button: Button },
+    ShutdownRequested,
 }
 
 fn sign_on(api_client: &ApiClient, player: &audio::Player) -> Result<()> {

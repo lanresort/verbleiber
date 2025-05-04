@@ -3,6 +3,8 @@
 
 ## 0.7.0 (unreleased)
 
+- Added handler to shut down on Ctrl-C in a more controlled way.
+
 - Fixed outdated property name in examplary configuration file.
 
 
