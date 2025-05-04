@@ -6,7 +6,7 @@ sounds_path = "sounds"
 base_url = "https://byceps.example/api/v1/whereabouts"
 api_token = "YOUR-API-TOKEN-GOES-HERE"
 client_token = "YOUR-CLIENT-TOKEN-GOES-HERE"
-tls_verification = true
+tls_verify = true
 timeout_in_seconds = 10
 
 [party]

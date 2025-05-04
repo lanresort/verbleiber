@@ -3,6 +3,8 @@
 
 ## 0.7.0 (unreleased)
 
+- Fixed outdated property name in examplary configuration file.
+
 
 ## 0.6.1 (2025-05-02)
 
