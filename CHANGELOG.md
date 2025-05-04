@@ -5,6 +5,8 @@
 
 - Added handler to shut down on Ctrl-C in a more controlled way.
 
+- Added client sign-off on application shutdown.
+
 - Fixed outdated property name in examplary configuration file.
 
 

@@ -174,6 +174,8 @@ fn main() -> Result<()> {
         }
     }
 
+    sign_off(&api_client, &player)?;
+
     log::info!("Shutting down ...");
 
     Ok(())
@@ -191,6 +193,18 @@ fn sign_on(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
         Ok(()) => log::info!("Signed on."),
         Err(e) => {
             log::info!("Signing on failed.\n{e}");
+            player.play("oh-nein-netzwerkfehler.ogg")?;
+        }
+    }
+    Ok(())
+}
+
+fn sign_off(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
+    log::info!("Signing off ...");
+    match api_client.sign_off() {
+        Ok(()) => log::info!("Signed off."),
+        Err(e) => {
+            log::info!("Signing off failed.\n{e}");
             player.play("oh-nein-netzwerkfehler.ogg")?;
         }
     }

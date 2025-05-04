@@ -89,6 +89,23 @@ impl ApiClient {
         }
     }
 
+    pub(crate) fn sign_off(&self) -> Result<()> {
+        let url = format!("{}/client/sign_off", self.base_url);
+        let authz_value = format!("Bearer {}", self.api_token);
+
+        match self
+            .agent
+            .post(&url)
+            .header("Authorization", &authz_value)
+            .header("x-whereabouts-client-token", &self.client_token)
+            .send_empty()
+        {
+            Ok(_) => Ok(()),
+            Err(Error::StatusCode(code)) => Err(anyhow!("API error: {}", code)),
+            Err(e) => Err(anyhow!("Network error: {}", e)),
+        }
+    }
+
     pub(crate) fn update_status(
         &self,
         user_id: &str,
