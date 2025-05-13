@@ -3,6 +3,10 @@
 
 ## 0.7.0 (unreleased)
 
+- Changed `Bearer` authorization header value from API token to client
+  token for sign-on, sign-off, tag retrieval, and status update
+  endpoints.
+
 - Added handler to shut down on Ctrl-C in a more controlled way.
 
 - Added client sign-off on application shutdown.

@@ -62,7 +62,7 @@ impl ApiClient {
         match self
             .agent
             .get(&url)
-            .header("Authorization", format!("Bearer {}", self.api_token))
+            .header("Authorization", format!("Bearer {}", self.client_token))
             .call()
         {
             Ok(mut response) => response
@@ -81,8 +81,7 @@ impl ApiClient {
         match self
             .agent
             .post(&url)
-            .header("Authorization", format!("Bearer {}", self.api_token))
-            .header("x-whereabouts-client-token", &self.client_token)
+            .header("Authorization", format!("Bearer {}", self.client_token))
             .send_empty()
         {
             Ok(_) => Ok(()),
@@ -97,8 +96,7 @@ impl ApiClient {
         match self
             .agent
             .post(&url)
-            .header("Authorization", format!("Bearer {}", self.api_token))
-            .header("x-whereabouts-client-token", &self.client_token)
+            .header("Authorization", format!("Bearer {}", self.client_token))
             .send_empty()
         {
             Ok(_) => Ok(()),
@@ -118,8 +116,7 @@ impl ApiClient {
         match self
             .agent
             .post(&url)
-            .header("Authorization", format!("Bearer {}", self.api_token))
-            .header("x-whereabouts-client-token", &self.client_token)
+            .header("Authorization", format!("Bearer {}", self.client_token))
             .send_json(StatusUpdate {
                 user_id: user_id.to_string(),
                 party_id: party_id.to_string(),
