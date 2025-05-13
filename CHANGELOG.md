@@ -7,6 +7,8 @@
   token for sign-on, sign-off, tag retrieval, and status update
   endpoints.
 
+- Removed now unused API token from code and configuration.
+
 - Added handler to shut down on Ctrl-C in a more controlled way.
 
 - Added client sign-off on application shutdown.
