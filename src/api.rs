@@ -59,9 +59,13 @@ impl ApiClient {
     pub(crate) fn get_tag_details(&self, tag: &str) -> Result<Option<TagDetails>> {
         let url = format!("{}/tags/{}", &self.base_url, tag);
         let authz_value = format!("Bearer {}", &self.api_token);
-        let request = self.agent.get(&url).header("Authorization", &authz_value);
 
-        match request.call() {
+        match self
+            .agent
+            .get(&url)
+            .header("Authorization", &authz_value)
+            .call()
+        {
             Ok(mut response) => response
                 .body_mut()
                 .read_json::<TagDetails>()
