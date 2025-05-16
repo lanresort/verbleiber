@@ -94,7 +94,7 @@ fn main() -> Result<()> {
                 log::info!("Tag read: {tag}");
 
                 log::info!("Requesting details for tag {} ...", tag);
-                match api_client.get_tag_details(&tag) {
+                current_user_id = match api_client.get_tag_details(&tag) {
                     Ok(details) => match details {
                         Some(details) => {
                             log::info!(
@@ -110,18 +110,21 @@ fn main() -> Result<()> {
                             }
 
                             log::info!("Awaiting whereabouts for user {user_id} ...");
-                            current_user_id = Some(user_id.to_string());
+
+                            Some(user_id.to_string())
                         }
                         None => {
                             log::info!("Unknown user tag: {tag}");
-                            current_user_id = None; // reset
                             player.play("unknown_user_tag.ogg")?;
+
+                            None
                         }
                     },
                     Err(e) => {
                         log::info!("Requesting tag details failed.\n{e}");
-                        current_user_id = None; // reset
                         player.play("oh-nein-netzwerkfehler.ogg")?;
+
+                        None
                     }
                 };
             }
