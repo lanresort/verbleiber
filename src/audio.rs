@@ -3,8 +3,8 @@
  * License: MIT
  */
 
-use anyhow::ensure;
 use anyhow::Result;
+use anyhow::ensure;
 use rodio::{Decoder, OutputStream, Sink};
 use std::fs::File;
 use std::io::BufReader;

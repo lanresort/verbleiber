@@ -71,11 +71,13 @@ fn main() -> Result<()> {
     });
 
     // buttons
-    thread::spawn(move || loop {
-        for event in button_input_device.fetch_events().unwrap() {
-            if let Some(button) = userinput::handle_button_press(event) {
-                let event = Event::ButtonPressed { button };
-                tx2.send(event).unwrap()
+    thread::spawn(move || {
+        loop {
+            for event in button_input_device.fetch_events().unwrap() {
+                if let Some(button) = userinput::handle_button_press(event) {
+                    let event = Event::ButtonPressed { button };
+                    tx2.send(event).unwrap()
+                }
             }
         }
     });
