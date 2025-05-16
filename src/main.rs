@@ -114,11 +114,13 @@ fn main() -> Result<()> {
                         }
                         None => {
                             log::info!("Unknown user tag: {tag}");
+                            current_user_id = None; // reset
                             player.play("unknown_user_tag.ogg")?;
                         }
                     },
                     Err(e) => {
                         log::info!("Requesting tag details failed.\n{e}");
+                        current_user_id = None; // reset
                         player.play("oh-nein-netzwerkfehler.ogg")?;
                     }
                 };
