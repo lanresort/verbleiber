@@ -171,14 +171,11 @@ fn main() -> Result<()> {
             }
             Event::ShutdownRequested => {
                 log::info!("Shutdown requested.");
-                break;
+                sign_off(&api_client, &player)?;
+                log::info!("Shutting down ...");
             }
         }
     }
-
-    sign_off(&api_client, &player)?;
-
-    log::info!("Shutting down ...");
 
     Ok(())
 }
