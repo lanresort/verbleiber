@@ -26,9 +26,9 @@ use crate::userinput::{Button, StringReader};
 fn main() -> Result<()> {
     simple_logger::init_with_level(log::Level::Info)?;
 
-    let args = cli::parse_args();
+    let cli = cli::parse_cli();
 
-    let config = config::load_config(&args.config_filename)?;
+    let config = config::load_config(&cli.config_filename)?;
 
     let mut reader_input_device = devices::open_input_device_or_exit(
         config.reader_input_device,
