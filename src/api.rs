@@ -54,25 +54,6 @@ impl ApiClient {
         }
     }
 
-    pub(crate) fn get_tag_details(&self, tag: &str) -> Result<Option<TagDetails>> {
-        let url = format!("{}/tags/{}", &self.base_url, tag);
-
-        match self
-            .agent
-            .get(&url)
-            .header("Authorization", format!("Bearer {}", self.client_token))
-            .call()
-        {
-            Ok(mut response) => response
-                .body_mut()
-                .read_json::<TagDetails>()
-                .map_err(|e| anyhow!("JSON error: {}", e))
-                .map(Some),
-            Err(Error::StatusCode(404)) => Ok(None),
-            Err(e) => Err(anyhow!("Network error: {}", e)),
-        }
-    }
-
     pub(crate) fn sign_on(&self) -> Result<()> {
         let url = format!("{}/client/sign_on", self.base_url);
 
@@ -99,6 +80,25 @@ impl ApiClient {
         {
             Ok(_) => Ok(()),
             Err(Error::StatusCode(code)) => Err(anyhow!("API error: {}", code)),
+            Err(e) => Err(anyhow!("Network error: {}", e)),
+        }
+    }
+
+    pub(crate) fn get_tag_details(&self, tag: &str) -> Result<Option<TagDetails>> {
+        let url = format!("{}/tags/{}", &self.base_url, tag);
+
+        match self
+            .agent
+            .get(&url)
+            .header("Authorization", format!("Bearer {}", self.client_token))
+            .call()
+        {
+            Ok(mut response) => response
+                .body_mut()
+                .read_json::<TagDetails>()
+                .map_err(|e| anyhow!("JSON error: {}", e))
+                .map(Some),
+            Err(Error::StatusCode(404)) => Ok(None),
             Err(e) => Err(anyhow!("Network error: {}", e)),
         }
     }
