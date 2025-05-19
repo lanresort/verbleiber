@@ -105,7 +105,8 @@ fn main() -> Result<()> {
                             );
                             let user_id = details.user.id;
 
-                            if let Some(filename) = details.sound_filename {
+                            if let Some(sound_name) = details.sound_name {
+                                let filename = format!("{}.ogg", sound_name);
                                 player.play(&filename)?;
                             }
 

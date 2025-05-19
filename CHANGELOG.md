@@ -13,6 +13,9 @@
 
 - Added client sign-off on application shutdown.
 
+- Adjusted to new whereabouts API response for tags which now includes
+  the sound name without file extension.
+
 - Fixed outdated property name in examplary configuration file.
 
 

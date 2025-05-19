@@ -28,7 +28,7 @@ pub(crate) struct StatusUpdate {
 pub(crate) struct TagDetails {
     pub identifier: String,
     pub user: TagUser,
-    pub sound_filename: Option<String>,
+    pub sound_name: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
