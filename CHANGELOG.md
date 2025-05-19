@@ -16,6 +16,9 @@
 - Adjusted to new whereabouts API response for tags which now includes
   the sound name without file extension.
 
+- Remove file extension from both hard-coded and configured sound names.
+  It will be added by the audio player.
+
 - Fixed outdated property name in examplary configuration file.
 
 

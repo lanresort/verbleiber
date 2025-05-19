@@ -19,16 +19,16 @@ button4 = "mystery-zone"
 
 [party.whereabouts_sounds]
 "orga-area" = [
-    "na-endlich.ogg",
-    "willkommen-zurueck.ogg",
+    "na-endlich",
+    "willkommen-zurueck",
 ]
 "on-the-move" = [
-    "auf-wiedersehen.ogg",
-    "bis-bald.ogg",
+    "auf-wiedersehen",
+    "bis-bald",
 ]
 "sleeping" = [
-    "gute-nacht-schlaf-schoen.ogg",
+    "gute-nacht-schlaf-schoen",
 ]
 "mystery-zone" = [
-    "willkommen-in-der-mystery-zone.ogg",
+    "willkommen-in-der-mystery-zone",
 ]

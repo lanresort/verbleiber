@@ -15,7 +15,7 @@ pub(crate) struct SoundLibrary {
 }
 
 impl SoundLibrary {
-    pub fn new(path: PathBuf) -> SoundLibrary {
+    fn new(path: PathBuf) -> SoundLibrary {
         SoundLibrary { path }
     }
 
@@ -53,8 +53,9 @@ impl Player {
         }
     }
 
-    pub fn play(&self, filename: &str) -> Result<()> {
-        let source = self.sound_lib.load_sound(filename)?;
+    pub fn play(&self, name: &str) -> Result<()> {
+        let filename = format!("{}.ogg", name);
+        let source = self.sound_lib.load_sound(&filename)?;
         self.sink.append(source);
         self.sink.sleep_until_end();
 

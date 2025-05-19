@@ -105,9 +105,8 @@ fn main() -> Result<()> {
                             );
                             let user_id = details.user.id;
 
-                            if let Some(sound_name) = details.sound_name {
-                                let filename = format!("{}.ogg", sound_name);
-                                player.play(&filename)?;
+                            if let Some(name) = details.sound_name {
+                                player.play(&name)?;
                             }
 
                             log::info!("Awaiting whereabouts for user {user_id} ...");
@@ -116,14 +115,14 @@ fn main() -> Result<()> {
                         }
                         None => {
                             log::info!("Unknown user tag: {tag}");
-                            player.play("unknown_user_tag.ogg")?;
+                            player.play("unknown_user_tag")?;
 
                             None
                         }
                     },
                     Err(e) => {
                         log::info!("Requesting tag details failed.\n{e}");
-                        player.play("oh-nein-netzwerkfehler.ogg")?;
+                        player.play("oh-nein-netzwerkfehler")?;
 
                         None
                     }
@@ -158,16 +157,16 @@ fn main() -> Result<()> {
                             Ok(_) => {
                                 log::info!("Status successfully updated.");
 
-                                if let Some(filenames) =
+                                if let Some(sound_names) =
                                     config.party.whereabouts_sounds.get(*whereabouts_name)
                                 {
-                                    let filename = choose_random_element(filenames, &mut rng);
-                                    player.play(&filename)?;
+                                    let sound_name = choose_random_element(sound_names, &mut rng);
+                                    player.play(&sound_name)?;
                                 }
                             }
                             Err(e) => {
                                 log::info!("Status update failed.\n{e}");
-                                player.play("oh-nein-netzwerkfehler.ogg")?;
+                                player.play("oh-nein-netzwerkfehler")?;
                             }
                         }
                     }
@@ -198,7 +197,7 @@ fn sign_on(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
         Ok(()) => log::info!("Signed on."),
         Err(e) => {
             log::info!("Signing on failed.\n{e}");
-            player.play("oh-nein-netzwerkfehler.ogg")?;
+            player.play("oh-nein-netzwerkfehler")?;
         }
     }
     Ok(())
@@ -210,7 +209,7 @@ fn sign_off(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
         Ok(()) => log::info!("Signed off."),
         Err(e) => {
             log::info!("Signing off failed.\n{e}");
-            player.play("oh-nein-netzwerkfehler.ogg")?;
+            player.play("oh-nein-netzwerkfehler")?;
         }
     }
     Ok(())
