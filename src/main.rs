@@ -18,6 +18,7 @@ mod model;
 mod userinput;
 
 use crate::api::ApiClient;
+use crate::audio::AudioPlayer;
 use crate::model::UserId;
 use crate::userinput::{Button, StringReader};
 
@@ -43,7 +44,7 @@ fn main() -> Result<()> {
     let mut rng = WyRand::new();
 
     let sounds_path = config.sounds_path.clone();
-    let player = audio::Player::new(sounds_path);
+    let player = AudioPlayer::new(sounds_path);
 
     let (tx1, rx): (Sender<Event>, Receiver<Event>) = flume::unbounded();
     let tx2 = tx1.clone();
@@ -191,7 +192,7 @@ enum Event {
     ShutdownRequested,
 }
 
-fn sign_on(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
+fn sign_on(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
     log::info!("Signing on ...");
     match api_client.sign_on() {
         Ok(()) => log::info!("Signed on."),
@@ -203,7 +204,7 @@ fn sign_on(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
     Ok(())
 }
 
-fn sign_off(api_client: &ApiClient, player: &audio::Player) -> Result<()> {
+fn sign_off(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
     log::info!("Signing off ...");
     match api_client.sign_off() {
         Ok(()) => log::info!("Signed off."),

@@ -33,20 +33,20 @@ impl SoundLibrary {
     }
 }
 
-pub(crate) struct Player {
+pub(crate) struct AudioPlayer {
     sound_lib: SoundLibrary,
     _stream: OutputStream, // Hold reference to avoid sound playback from breaking!
     sink: Sink,
 }
 
-impl Player {
-    pub fn new(sounds_path: PathBuf) -> Player {
+impl AudioPlayer {
+    pub fn new(sounds_path: PathBuf) -> AudioPlayer {
         let sound_lib = SoundLibrary::new(sounds_path);
 
         let (_stream, stream_handle) = OutputStream::try_default().unwrap();
         let sink = Sink::try_new(&stream_handle).unwrap();
 
-        Player {
+        AudioPlayer {
             sound_lib,
             _stream,
             sink,
