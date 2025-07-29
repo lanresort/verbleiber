@@ -21,6 +21,8 @@
 
 - Fixed outdated property name in exemplary configuration file.
 
+- Updated clap to v4.5.41.
+
 
 ## 0.6.1 (2025-05-02)
 
