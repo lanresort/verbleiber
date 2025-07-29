@@ -23,6 +23,8 @@
 
 - Updated clap to v4.5.41.
 
+- Updated nanorand to v0.8.0.
+
 
 ## 0.6.1 (2025-05-02)
 
