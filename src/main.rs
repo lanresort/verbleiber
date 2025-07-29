@@ -44,7 +44,7 @@ fn main() -> Result<()> {
     let mut rng = WyRand::new();
 
     let sounds_path = config.sounds_path.clone();
-    let player = AudioPlayer::new(sounds_path);
+    let player = AudioPlayer::new(sounds_path)?;
 
     let (tx1, rx): (Sender<Event>, Receiver<Event>) = flume::unbounded();
     let tx2 = tx1.clone();

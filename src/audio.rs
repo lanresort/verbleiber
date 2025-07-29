@@ -40,17 +40,17 @@ pub(crate) struct AudioPlayer {
 }
 
 impl AudioPlayer {
-    pub fn new(sounds_path: PathBuf) -> AudioPlayer {
+    pub fn new(sounds_path: PathBuf) -> Result<AudioPlayer> {
         let sound_lib = SoundLibrary::new(sounds_path);
 
-        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-        let sink = Sink::try_new(&stream_handle).unwrap();
+        let (_stream, stream_handle) = OutputStream::try_default()?;
+        let sink = Sink::try_new(&stream_handle)?;
 
-        AudioPlayer {
+        Ok(AudioPlayer {
             sound_lib,
             _stream,
             sink,
-        }
+        })
     }
 
     pub fn play(&self, name: &str) -> Result<()> {
