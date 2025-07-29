@@ -27,6 +27,8 @@
 
 - Updated toml to v0.9.3.
 
+- Updated ureq to v3.0.12.
+
 
 ## 0.6.1 (2025-05-02)
 
