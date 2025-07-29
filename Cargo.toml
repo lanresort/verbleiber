@@ -21,5 +21,5 @@ nanorand = "0.8.0"
 rodio = { version = "0.20.1", default-features = false, features = ["vorbis"] }
 serde = { version = "1.0", features = ["derive"] }
 simple_logger = "5.0.0"
-toml = "0.8.22"
+toml = "0.9.3"
 ureq = { version = "3.0.11", features = ["json"] }

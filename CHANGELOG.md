@@ -25,6 +25,8 @@
 
 - Updated nanorand to v0.8.0.
 
+- Updated toml to v0.9.3.
+
 
 ## 0.6.1 (2025-05-02)
 
