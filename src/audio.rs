@@ -5,7 +5,7 @@
 
 use anyhow::Result;
 use anyhow::ensure;
-use rodio::{Decoder, OutputStream, Sink};
+use rodio::{Decoder, OutputStream, OutputStreamBuilder, Sink};
 use std::fs::File;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
@@ -35,7 +35,7 @@ impl SoundLibrary {
 
 pub(crate) struct AudioPlayer {
     sound_lib: SoundLibrary,
-    _stream: OutputStream, // Hold reference to avoid sound playback from breaking!
+    _output_stream: OutputStream, // Hold reference to keep sound playback working!
     sink: Sink,
 }
 
@@ -43,12 +43,12 @@ impl AudioPlayer {
     pub fn new(sounds_path: PathBuf) -> Result<AudioPlayer> {
         let sound_lib = SoundLibrary::new(sounds_path);
 
-        let (_stream, stream_handle) = OutputStream::try_default()?;
-        let sink = Sink::try_new(&stream_handle)?;
+        let output_stream = OutputStreamBuilder::open_default_stream()?;
+        let sink = Sink::connect_new(output_stream.mixer());
 
         Ok(AudioPlayer {
             sound_lib,
-            _stream,
+            _output_stream: output_stream,
             sink,
         })
     }
