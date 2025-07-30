@@ -14,6 +14,7 @@ env:
 
 jobs:
   build:
+    name: Build and test Rust project
 
     runs-on: ubuntu-latest
 
