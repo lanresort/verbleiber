@@ -24,7 +24,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Install system dependencies
-        run: sudo apt update && sudo apt install --assume-yes libasound2-dev
+        run: sudo apt-get update && sudo apt-get install --assume-yes libasound2-dev
 
       - name: Build
         run: rustc --version && cargo build --verbose
