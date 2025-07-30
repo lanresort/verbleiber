@@ -23,7 +23,7 @@ use crate::model::UserId;
 use crate::userinput::{Button, StringReader};
 
 fn main() -> Result<()> {
-    simple_logger::init_with_level(log::Level::Info)?;
+    simple_logger::init_with_level(log::Level::Debug)?;
 
     let cli = cli::parse_cli();
 
