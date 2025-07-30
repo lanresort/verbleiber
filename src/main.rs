@@ -4,7 +4,6 @@
  */
 
 use anyhow::Result;
-use ctrlc;
 use evdev::Device;
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
