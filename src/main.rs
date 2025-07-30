@@ -57,8 +57,8 @@ fn main() -> Result<()> {
     })
     .expect("Could not set Ctrl-C handler");
 
-    thread::spawn(move || handle_tag_reads(reader_input_device, tx1));
-    thread::spawn(move || handle_button_presses(button_input_device, tx2));
+    thread::spawn(|| handle_tag_reads(reader_input_device, tx1));
+    thread::spawn(|| handle_button_presses(button_input_device, tx2));
 
     let mut current_user_id: Option<UserId> = None;
 
