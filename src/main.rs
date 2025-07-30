@@ -153,6 +153,7 @@ fn main() -> Result<()> {
                 log::info!("Shutdown requested.");
                 sign_off(&api_client, &player)?;
                 log::info!("Shutting down ...");
+                break;
             }
         }
     }
