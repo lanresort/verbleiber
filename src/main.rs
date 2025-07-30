@@ -96,7 +96,7 @@ fn main() -> Result<()> {
                         }
                     },
                     Err(e) => {
-                        log::info!("Requesting tag details failed.\n{e}");
+                        log::warn!("Requesting tag details failed.\n{e}");
                         player.play("oh-nein-netzwerkfehler")?;
 
                         None
@@ -140,7 +140,7 @@ fn main() -> Result<()> {
                                 }
                             }
                             Err(e) => {
-                                log::info!("Status update failed.\n{e}");
+                                log::warn!("Status update failed.\n{e}");
                                 player.play("oh-nein-netzwerkfehler")?;
                             }
                         }
@@ -197,7 +197,7 @@ fn sign_on(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
     match api_client.sign_on() {
         Ok(()) => log::info!("Signed on."),
         Err(e) => {
-            log::info!("Signing on failed.\n{e}");
+            log::warn!("Signing on failed.\n{e}");
             player.play("oh-nein-netzwerkfehler")?;
         }
     }
@@ -209,7 +209,7 @@ fn sign_off(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
     match api_client.sign_off() {
         Ok(()) => log::info!("Signed off."),
         Err(e) => {
-            log::info!("Signing off failed.\n{e}");
+            log::warn!("Signing off failed.\n{e}");
             player.play("oh-nein-netzwerkfehler")?;
         }
     }
