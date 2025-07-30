@@ -49,13 +49,13 @@ fn main() -> Result<()> {
     let tx3 = tx1.clone();
 
     ctrlc::set_handler(move || {
-        tx3.send(Event::ShutdownRequested)
+        tx1.send(Event::ShutdownRequested)
             .expect("Could not send shutdown signal")
     })
     .expect("Could not set Ctrl-C handler");
 
-    thread::spawn(|| handle_tag_reads(reader_input_device, tx1));
-    thread::spawn(|| handle_button_presses(button_input_device, tx2));
+    thread::spawn(|| handle_tag_reads(reader_input_device, tx2));
+    thread::spawn(|| handle_button_presses(button_input_device, tx3));
 
     let mut current_user_id: Option<UserId> = None;
 
