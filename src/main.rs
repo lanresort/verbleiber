@@ -66,13 +66,13 @@ fn main() -> Result<()> {
     for msg in rx.iter() {
         match msg {
             Event::TagRead { tag } => {
-                log::info!("Tag read: {tag}");
+                log::debug!("Tag read: {tag}");
 
-                log::info!("Requesting details for tag {} ...", tag);
+                log::debug!("Requesting details for tag {} ...", tag);
                 current_user_id = match api_client.get_tag_details(&tag) {
                     Ok(details) => match details {
                         Some(details) => {
-                            log::info!(
+                            log::debug!(
                                 "User for tag {}: {} (ID: {})",
                                 details.identifier,
                                 details.user.screen_name.unwrap_or("<nameless>".to_string()),
@@ -84,7 +84,7 @@ fn main() -> Result<()> {
                                 player.play(&name)?;
                             }
 
-                            log::info!("Awaiting whereabouts for user {user_id} ...");
+                            log::debug!("Awaiting whereabouts for user {user_id} ...");
 
                             Some(user_id.to_string())
                         }
@@ -104,7 +104,7 @@ fn main() -> Result<()> {
                 };
             }
             Event::ButtonPressed { button } => {
-                log::info!("Button pressed: {:?}", button);
+                log::debug!("Button pressed: {:?}", button);
 
                 let button_name = match button {
                     Button::Button1 => "button1".to_string(),
@@ -119,7 +119,7 @@ fn main() -> Result<()> {
                     if let Some(whereabouts_name) =
                         &config.party.buttons_to_whereabouts.get(&button_name)
                     {
-                        log::info!(
+                        log::debug!(
                             "Submitting whereabouts for user {user_id} -> {whereabouts_name} ..."
                         );
 
@@ -130,7 +130,7 @@ fn main() -> Result<()> {
                         );
                         match response {
                             Ok(_) => {
-                                log::info!("Status successfully updated.");
+                                log::debug!("Status successfully updated.");
 
                                 if let Some(sound_names) =
                                     config.party.whereabouts_sounds.get(*whereabouts_name)
