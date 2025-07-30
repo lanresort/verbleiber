@@ -23,8 +23,6 @@ use crate::audio::AudioPlayer;
 use crate::model::UserId;
 use crate::userinput::{Button, StringReader};
 
-// TODO: Replace `.unwrap()` with `?` in threads.
-
 fn main() -> Result<()> {
     simple_logger::init_with_level(log::Level::Info)?;
 
@@ -169,26 +167,26 @@ enum Event {
     ShutdownRequested,
 }
 
-fn handle_tag_reads(mut device: Device, sender: Sender<Event>) {
+fn handle_tag_reads(mut device: Device, sender: Sender<Event>) -> Result<()> {
     let mut string_reader = StringReader::new();
     loop {
-        for event in device.fetch_events().unwrap() {
+        for event in device.fetch_events()? {
             if let Some(value) = string_reader.handle_event(event) {
                 let event = Event::TagRead {
                     tag: value.to_string(),
                 };
-                sender.send(event).unwrap();
+                sender.send(event)?;
             }
         }
     }
 }
 
-fn handle_button_presses(mut device: Device, sender: Sender<Event>) {
+fn handle_button_presses(mut device: Device, sender: Sender<Event>) -> Result<()> {
     loop {
-        for event in device.fetch_events().unwrap() {
+        for event in device.fetch_events()? {
             if let Some(button) = userinput::handle_button_press(event) {
                 let event = Event::ButtonPressed { button };
-                sender.send(event).unwrap()
+                sender.send(event)?;
             }
         }
     }
