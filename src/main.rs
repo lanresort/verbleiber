@@ -48,11 +48,7 @@ fn main() -> Result<()> {
     let tx2 = tx1.clone();
     let tx3 = tx1.clone();
 
-    ctrlc::set_handler(move || {
-        tx1.send(Event::ShutdownRequested)
-            .expect("Could not send shutdown signal")
-    })
-    .expect("Could not set Ctrl-C handler");
+    ctrlc::set_handler(move || handle_ctrl_c(&tx1)).expect("Could not set Ctrl-C handler");
 
     thread::spawn(|| handle_tag_reads(reader_input_device, tx2));
     thread::spawn(|| handle_button_presses(button_input_device, tx3));
@@ -165,6 +161,12 @@ enum Event {
     TagRead { tag: String },
     ButtonPressed { button: Button },
     ShutdownRequested,
+}
+
+fn handle_ctrl_c(sender: &Sender<Event>) {
+    sender
+        .send(Event::ShutdownRequested)
+        .expect("Could not send shutdown signal")
 }
 
 fn handle_tag_reads(mut device: Device, sender: Sender<Event>) -> Result<()> {
