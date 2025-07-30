@@ -5,6 +5,7 @@
 
 use anyhow::Result;
 use ctrlc;
+use evdev::Device;
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
 use std::thread;
@@ -31,12 +32,12 @@ fn main() -> Result<()> {
 
     let config = config::load_config(&cli.config_filename)?;
 
-    let mut reader_input_device = devices::open_input_device_or_exit(
+    let reader_input_device = devices::open_input_device_or_exit(
         config.reader_input_device,
         "reader input device".to_string(),
     )?;
 
-    let mut button_input_device = devices::open_input_device_or_exit(
+    let button_input_device = devices::open_input_device_or_exit(
         config.button_input_device,
         "button input device".to_string(),
     )?;
@@ -56,32 +57,8 @@ fn main() -> Result<()> {
     })
     .expect("Could not set Ctrl-C handler");
 
-    // RFID/barcode reader
-    thread::spawn(move || {
-        let mut string_reader = StringReader::new();
-        loop {
-            for event in reader_input_device.fetch_events().unwrap() {
-                if let Some(value) = string_reader.handle_event(event) {
-                    let event = Event::TagRead {
-                        tag: value.to_string(),
-                    };
-                    tx1.send(event).unwrap();
-                }
-            }
-        }
-    });
-
-    // buttons
-    thread::spawn(move || {
-        loop {
-            for event in button_input_device.fetch_events().unwrap() {
-                if let Some(button) = userinput::handle_button_press(event) {
-                    let event = Event::ButtonPressed { button };
-                    tx2.send(event).unwrap()
-                }
-            }
-        }
-    });
+    thread::spawn(move || handle_tag_reads(reader_input_device, tx1));
+    thread::spawn(move || handle_button_presses(button_input_device, tx2));
 
     let mut current_user_id: Option<UserId> = None;
 
@@ -190,6 +167,31 @@ enum Event {
     TagRead { tag: String },
     ButtonPressed { button: Button },
     ShutdownRequested,
+}
+
+fn handle_tag_reads(mut device: Device, sender: Sender<Event>) {
+    let mut string_reader = StringReader::new();
+    loop {
+        for event in device.fetch_events().unwrap() {
+            if let Some(value) = string_reader.handle_event(event) {
+                let event = Event::TagRead {
+                    tag: value.to_string(),
+                };
+                sender.send(event).unwrap();
+            }
+        }
+    }
+}
+
+fn handle_button_presses(mut device: Device, sender: Sender<Event>) {
+    loop {
+        for event in device.fetch_events().unwrap() {
+            if let Some(button) = userinput::handle_button_press(event) {
+                let event = Event::ButtonPressed { button };
+                sender.send(event).unwrap()
+            }
+        }
+    }
 }
 
 fn sign_on(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
