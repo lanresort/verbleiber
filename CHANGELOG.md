@@ -21,7 +21,7 @@
 
 - Fixed outdated property name in exemplary configuration file.
 
-- Updated clap to v4.5.41.
+- Updated clap to v4.5.45.
 
 - Updated nanorand to v0.8.0.
 
