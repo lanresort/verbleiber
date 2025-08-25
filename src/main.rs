@@ -11,6 +11,7 @@ use std::thread;
 
 mod api;
 mod audio;
+mod buttons;
 mod cli;
 mod config;
 mod devices;
@@ -19,8 +20,9 @@ mod userinput;
 
 use crate::api::ApiClient;
 use crate::audio::AudioPlayer;
+use crate::buttons::Button;
 use crate::model::UserId;
-use crate::userinput::{Button, StringReader};
+use crate::userinput::StringReader;
 
 fn main() -> Result<()> {
     simple_logger::init_with_level(log::Level::Debug)?;
@@ -186,7 +188,7 @@ fn handle_tag_reads(mut device: Device, sender: Sender<Event>) -> Result<()> {
 fn handle_button_presses(mut device: Device, sender: Sender<Event>) -> Result<()> {
     loop {
         for event in device.fetch_events()? {
-            if let Some(button) = userinput::handle_button_press(event) {
+            if let Some(button) = buttons::handle_button_press(event) {
                 let event = Event::ButtonPressed { button };
                 sender.send(event)?;
             }
