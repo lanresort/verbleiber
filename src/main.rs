@@ -22,7 +22,7 @@ use crate::api::ApiClient;
 use crate::audio::AudioPlayer;
 use crate::buttons::Button;
 use crate::model::UserId;
-use crate::userinput::StringReader;
+use crate::userinput::TagReader;
 
 fn main() -> Result<()> {
     simple_logger::init_with_level(log::Level::Debug)?;
@@ -172,10 +172,10 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
 }
 
 fn handle_tag_reads(mut device: Device, sender: Sender<Event>) -> Result<()> {
-    let mut string_reader = StringReader::new();
+    let mut tag_reader = TagReader::new();
     loop {
         for event in device.fetch_events()? {
-            if let Some(value) = string_reader.handle_event(event) {
+            if let Some(value) = tag_reader.handle_event(event) {
                 let event = Event::TagRead {
                     tag: value.to_string(),
                 };

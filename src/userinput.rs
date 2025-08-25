@@ -5,11 +5,11 @@
 
 use evdev::{EventSummary, EventType, InputEvent, KeyCode};
 
-pub(crate) struct StringReader {
+pub(crate) struct TagReader {
     chars_read: String,
 }
 
-impl StringReader {
+impl TagReader {
     pub fn new() -> Self {
         Self {
             chars_read: String::new(),
