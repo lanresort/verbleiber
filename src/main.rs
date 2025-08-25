@@ -15,12 +15,14 @@ mod buttons;
 mod cli;
 mod config;
 mod devices;
+mod events;
 mod model;
 mod tagreader;
 
 use crate::api::ApiClient;
 use crate::audio::AudioPlayer;
 use crate::buttons::Button;
+use crate::events::Event;
 use crate::model::UserId;
 use crate::tagreader::TagReader;
 
@@ -157,12 +159,6 @@ fn main() -> Result<()> {
     }
 
     Ok(())
-}
-
-enum Event {
-    TagRead { tag: String },
-    ButtonPressed { button: Button },
-    ShutdownRequested,
 }
 
 fn handle_ctrl_c(sender: &Sender<Event>) {
