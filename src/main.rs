@@ -16,13 +16,13 @@ mod cli;
 mod config;
 mod devices;
 mod model;
-mod userinput;
+mod tagreader;
 
 use crate::api::ApiClient;
 use crate::audio::AudioPlayer;
 use crate::buttons::Button;
 use crate::model::UserId;
-use crate::userinput::TagReader;
+use crate::tagreader::TagReader;
 
 fn main() -> Result<()> {
     simple_logger::init_with_level(log::Level::Debug)?;
