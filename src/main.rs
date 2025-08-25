@@ -24,7 +24,6 @@ use crate::audio::AudioPlayer;
 use crate::buttons::Button;
 use crate::events::Event;
 use crate::model::UserId;
-use crate::tagreader::TagReader;
 
 fn main() -> Result<()> {
     simple_logger::init_with_level(log::Level::Debug)?;
@@ -54,7 +53,7 @@ fn main() -> Result<()> {
 
     ctrlc::set_handler(move || handle_ctrl_c(&tx1)).expect("Could not set Ctrl-C handler");
 
-    thread::spawn(|| handle_tag_reads(reader_input_device, tx2));
+    thread::spawn(|| tagreader::handle_tag_reads(reader_input_device, tx2));
     thread::spawn(|| handle_button_presses(button_input_device, tx3));
 
     let mut current_user_id: Option<UserId> = None;
@@ -165,20 +164,6 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
     sender
         .send(Event::ShutdownRequested)
         .expect("Could not send shutdown signal")
-}
-
-fn handle_tag_reads(mut device: Device, sender: Sender<Event>) -> Result<()> {
-    let mut tag_reader = TagReader::new();
-    loop {
-        for event in device.fetch_events()? {
-            if let Some(value) = tag_reader.handle_event(event) {
-                let event = Event::TagRead {
-                    tag: value.to_string(),
-                };
-                sender.send(event)?;
-            }
-        }
-    }
 }
 
 fn handle_button_presses(mut device: Device, sender: Sender<Event>) -> Result<()> {

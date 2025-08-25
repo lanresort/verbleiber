@@ -3,20 +3,38 @@
  * License: MIT
  */
 
-use evdev::{EventSummary, EventType, InputEvent, KeyCode};
+use anyhow::Result;
+use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
+use flume::Sender;
 
-pub(crate) struct TagReader {
+use crate::events::Event;
+
+pub(crate) fn handle_tag_reads(mut device: Device, sender: Sender<Event>) -> Result<()> {
+    let mut tag_reader = TagReader::new();
+    loop {
+        for event in device.fetch_events()? {
+            if let Some(value) = tag_reader.handle_event(event) {
+                let event = Event::TagRead {
+                    tag: value.to_string(),
+                };
+                sender.send(event)?;
+            }
+        }
+    }
+}
+
+struct TagReader {
     chars_read: String,
 }
 
 impl TagReader {
-    pub fn new() -> Self {
+    fn new() -> Self {
         Self {
             chars_read: String::new(),
         }
     }
 
-    pub fn handle_event(&mut self, event: InputEvent) -> Option<String> {
+    fn handle_event(&mut self, event: InputEvent) -> Option<String> {
         if !is_key_released(event) {
             return None;
         }
