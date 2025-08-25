@@ -3,9 +3,24 @@
  * License: MIT
  */
 
-use evdev::{EventSummary, EventType, InputEvent, KeyCode};
+use anyhow::Result;
+use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
+use flume::Sender;
 
-pub(crate) fn handle_button_press(event: InputEvent) -> Option<Button> {
+use crate::events::Event;
+
+pub(crate) fn handle_button_presses(mut device: Device, sender: Sender<Event>) -> Result<()> {
+    loop {
+        for event in device.fetch_events()? {
+            if let Some(button) = handle_button_press(event) {
+                let event = Event::ButtonPressed { button };
+                sender.send(event)?;
+            }
+        }
+    }
+}
+
+fn handle_button_press(event: InputEvent) -> Option<Button> {
     if !is_key_released(event) {
         return None;
     }

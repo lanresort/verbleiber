@@ -4,7 +4,6 @@
  */
 
 use anyhow::Result;
-use evdev::Device;
 use flume::{Receiver, Sender};
 use nanorand::{Rng, WyRand};
 use std::thread;
@@ -54,7 +53,7 @@ fn main() -> Result<()> {
     ctrlc::set_handler(move || handle_ctrl_c(&tx1)).expect("Could not set Ctrl-C handler");
 
     thread::spawn(|| tagreader::handle_tag_reads(reader_input_device, tx2));
-    thread::spawn(|| handle_button_presses(button_input_device, tx3));
+    thread::spawn(|| buttons::handle_button_presses(button_input_device, tx3));
 
     let mut current_user_id: Option<UserId> = None;
 
@@ -164,17 +163,6 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
     sender
         .send(Event::ShutdownRequested)
         .expect("Could not send shutdown signal")
-}
-
-fn handle_button_presses(mut device: Device, sender: Sender<Event>) -> Result<()> {
-    loop {
-        for event in device.fetch_events()? {
-            if let Some(button) = buttons::handle_button_press(event) {
-                let event = Event::ButtonPressed { button };
-                sender.send(event)?;
-            }
-        }
-    }
 }
 
 fn sign_on(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
