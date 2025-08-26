@@ -22,7 +22,7 @@ mod tagreader;
 use crate::api::ApiClient;
 use crate::audio::AudioPlayer;
 use crate::buttons::Button;
-use crate::config::ApiConfig;
+use crate::config::{ApiConfig, PartyConfig};
 use crate::events::Event;
 use crate::model::UserId;
 
@@ -56,7 +56,7 @@ fn main() -> Result<()> {
 
     let mut current_user_id: Option<UserId> = None;
 
-    let mut client = Client::new(sounds_path, &config.api, config.party.party_id)?;
+    let mut client = Client::new(sounds_path, &config.api, config.party.party_id.to_string())?;
 
     client.sign_on()?;
 
@@ -68,36 +68,14 @@ fn main() -> Result<()> {
             }
             Event::ButtonPressed { button } => {
                 log::debug!("Button pressed: {:?}", button);
-
                 // Submit if user has identified; ignore if no user has
                 // been specified.
                 if let Some(user_id) = current_user_id {
-                    let button_name = client.get_button_name(button);
-                    if let Some(whereabouts_name) =
-                        &config.party.buttons_to_whereabouts.get(&button_name)
-                    {
-                        log::debug!(
-                            "Submitting whereabouts for user {user_id} -> {whereabouts_name} ..."
-                        );
-
-                        let response = client.update_status(&user_id, whereabouts_name);
-                        match response {
-                            Ok(_) => {
-                                log::debug!("Status successfully updated.");
-
-                                if let Some(sound_names) =
-                                    config.party.whereabouts_sounds.get(*whereabouts_name)
-                                {
-                                    client.play_random_sound(sound_names)?;
-                                }
-                            }
-                            Err(e) => {
-                                log::warn!("Status update failed.\n{e}");
-                                client.play_sound("oh-nein-netzwerkfehler")?;
-                            }
-                        }
-                    }
-
+                    client.handle_button_press_with_identified_user(
+                        user_id,
+                        button,
+                        &config.party,
+                    )?;
                     current_user_id = None; // reset
                 }
             }
@@ -193,6 +171,36 @@ impl Client {
                 Ok(None)
             }
         }
+    }
+
+    fn handle_button_press_with_identified_user(
+        &mut self,
+        user_id: UserId,
+        button: Button,
+        party_config: &PartyConfig,
+    ) -> Result<()> {
+        let button_name = self.get_button_name(button);
+        if let Some(whereabouts_name) = &party_config.buttons_to_whereabouts.get(&button_name) {
+            log::debug!("Submitting whereabouts for user {user_id} -> {whereabouts_name} ...");
+
+            let response = self.update_status(&user_id, whereabouts_name);
+            match response {
+                Ok(_) => {
+                    log::debug!("Status successfully updated.");
+
+                    if let Some(sound_names) =
+                        &party_config.whereabouts_sounds.get(*whereabouts_name)
+                    {
+                        self.play_random_sound(sound_names)?;
+                    }
+                }
+                Err(e) => {
+                    log::warn!("Status update failed.\n{e}");
+                    self.play_sound("oh-nein-netzwerkfehler")?;
+                }
+            }
+        }
+        Ok(())
     }
 
     fn get_button_name(&self, button: Button) -> String {
