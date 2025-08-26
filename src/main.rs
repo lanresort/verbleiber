@@ -41,7 +41,7 @@ fn main() -> Result<()> {
         "button input device".to_string(),
     )?;
 
-    let mut rng = WyRand::new();
+    let mut random = Random::new();
 
     let sounds_path = config.sounds_path.clone();
     let player = AudioPlayer::new(sounds_path)?;
@@ -133,7 +133,7 @@ fn main() -> Result<()> {
                                 if let Some(sound_names) =
                                     config.party.whereabouts_sounds.get(*whereabouts_name)
                                 {
-                                    let sound_name = choose_random_element(sound_names, &mut rng);
+                                    let sound_name = random.choose_random_element(sound_names);
                                     player.play(&sound_name)?;
                                 }
                             }
@@ -189,8 +189,18 @@ fn sign_off(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
     Ok(())
 }
 
-fn choose_random_element(elements: &[String], rng: &mut WyRand) -> String {
-    let random_index = rng.generate_range(0..elements.len());
-    let element = &elements[random_index];
-    element.to_owned()
+struct Random {
+    rng: WyRand,
+}
+
+impl Random {
+    fn new() -> Self {
+        Self { rng: WyRand::new() }
+    }
+
+    fn choose_random_element(&mut self, elements: &[String]) -> String {
+        let random_index = self.rng.generate_range(0..elements.len());
+        let element = &elements[random_index];
+        element.to_owned()
+    }
 }
