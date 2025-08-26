@@ -71,16 +71,10 @@ fn main() -> Result<()> {
             Event::ButtonPressed { button } => {
                 log::debug!("Button pressed: {:?}", button);
 
-                let button_name = match button {
-                    Button::Button1 => "button1".to_string(),
-                    Button::Button2 => "button2".to_string(),
-                    Button::Button3 => "button3".to_string(),
-                    Button::Button4 => "button4".to_string(),
-                };
-
                 // Submit if user has identified; ignore if no user has
                 // been specified.
                 if let Some(user_id) = current_user_id {
+                    let button_name = client.get_button_name(button);
                     if let Some(whereabouts_name) =
                         &config.party.buttons_to_whereabouts.get(&button_name)
                     {
@@ -199,6 +193,15 @@ impl Client {
 
                 Ok(None)
             }
+        }
+    }
+
+    fn get_button_name(&self, button: Button) -> String {
+        match button {
+            Button::Button1 => "button1".to_string(),
+            Button::Button2 => "button2".to_string(),
+            Button::Button3 => "button3".to_string(),
+            Button::Button4 => "button4".to_string(),
         }
     }
 
