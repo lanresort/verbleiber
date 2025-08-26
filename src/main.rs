@@ -43,8 +43,6 @@ fn main() -> Result<()> {
         "button input device".to_string(),
     )?;
 
-    let mut random = random::Random::new();
-
     let sounds_path = config.sounds_path.clone();
 
     let (tx1, rx): (Sender<Event>, Receiver<Event>) = flume::unbounded();
@@ -58,7 +56,7 @@ fn main() -> Result<()> {
 
     let mut current_user_id: Option<UserId> = None;
 
-    let client = Client::new(sounds_path, &config.api, config.party.party_id)?;
+    let mut client = Client::new(sounds_path, &config.api, config.party.party_id)?;
 
     client.sign_on()?;
 
@@ -90,8 +88,7 @@ fn main() -> Result<()> {
                                 if let Some(sound_names) =
                                     config.party.whereabouts_sounds.get(*whereabouts_name)
                                 {
-                                    let sound_name = random.choose_random_element(sound_names);
-                                    client.play_sound(&sound_name)?;
+                                    client.play_random_sound(sound_names)?;
                                 }
                             }
                             Err(e) => {
@@ -124,6 +121,7 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
 
 struct Client {
     audio_player: AudioPlayer,
+    random: random::Random,
     api_client: ApiClient,
 }
 
@@ -131,6 +129,7 @@ impl Client {
     fn new(sounds_path: PathBuf, api_config: &ApiConfig, party_id: String) -> Result<Self> {
         Ok(Self {
             audio_player: AudioPlayer::new(sounds_path)?,
+            random: random::Random::new(),
             api_client: ApiClient::new(api_config, party_id),
         })
     }
@@ -211,5 +210,10 @@ impl Client {
 
     fn play_sound(&self, name: &str) -> Result<()> {
         self.audio_player.play(name)
+    }
+
+    fn play_random_sound(&mut self, names: &[String]) -> Result<()> {
+        let name = self.random.choose_random_element(names);
+        self.play_sound(&name)
     }
 }
