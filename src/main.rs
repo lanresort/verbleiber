@@ -54,13 +54,23 @@ fn main() -> Result<()> {
     thread::spawn(|| tagreader::handle_tag_reads(reader_input_device, tx2));
     thread::spawn(|| buttons::handle_button_presses(button_input_device, tx3));
 
-    let mut current_user_id: Option<UserId> = None;
-
-    let mut client = Client::new(sounds_path, &config.api, config.party.party_id.to_string())?;
+    let client = Client::new(sounds_path, &config.api, config.party.party_id.to_string())?;
 
     client.sign_on()?;
 
-    for msg in rx.iter() {
+    handle_events(rx, client, &config.party)?;
+
+    Ok(())
+}
+
+fn handle_events(
+    event_receiver: Receiver<Event>,
+    mut client: Client,
+    party_config: &PartyConfig,
+) -> Result<()> {
+    let mut current_user_id: Option<UserId> = None;
+
+    for msg in event_receiver.iter() {
         match msg {
             Event::TagRead { tag } => {
                 log::debug!("Tag read: {tag}");
@@ -74,7 +84,7 @@ fn main() -> Result<()> {
                     client.handle_button_press_with_identified_user(
                         user_id,
                         button,
-                        &config.party,
+                        party_config,
                     )?;
                     current_user_id = None; // reset
                 }
