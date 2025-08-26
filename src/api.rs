@@ -14,6 +14,7 @@ use crate::config::ApiConfig;
 pub(crate) struct ApiClient {
     pub base_url: String,
     pub client_token: String,
+    pub party_id: String,
     agent: Agent,
 }
 
@@ -38,10 +39,11 @@ pub(crate) struct TagUser {
 }
 
 impl ApiClient {
-    pub(crate) fn new(config: &ApiConfig) -> Self {
+    pub(crate) fn new(config: &ApiConfig, party_id: String) -> Self {
         Self {
             base_url: config.base_url.to_owned(),
             client_token: config.client_token.to_owned(),
+            party_id,
             agent: Agent::config_builder()
                 .timeout_global(Some(Duration::from_secs(config.timeout_in_seconds)))
                 .tls_config(
@@ -103,12 +105,7 @@ impl ApiClient {
         }
     }
 
-    pub(crate) fn update_status(
-        &self,
-        user_id: &str,
-        party_id: &str,
-        whereabouts_name: &str,
-    ) -> Result<()> {
+    pub(crate) fn update_status(&self, user_id: &str, whereabouts_name: &str) -> Result<()> {
         let url = format!("{}/statuses", self.base_url);
 
         match self
@@ -117,7 +114,7 @@ impl ApiClient {
             .header("Authorization", format!("Bearer {}", self.client_token))
             .send_json(StatusUpdate {
                 user_id: user_id.to_string(),
-                party_id: party_id.to_string(),
+                party_id: self.party_id.to_string(),
                 whereabouts_name: whereabouts_name.to_string(),
             }) {
             Ok(_) => Ok(()),

@@ -57,7 +57,7 @@ fn main() -> Result<()> {
 
     let mut current_user_id: Option<UserId> = None;
 
-    let api_client = ApiClient::new(&config.api);
+    let api_client = ApiClient::new(&config.api, config.party.party_id);
 
     let client = Client::new(sounds_path)?;
 
@@ -123,11 +123,7 @@ fn main() -> Result<()> {
                             "Submitting whereabouts for user {user_id} -> {whereabouts_name} ..."
                         );
 
-                        let response = api_client.update_status(
-                            &user_id,
-                            &config.party.party_id,
-                            whereabouts_name,
-                        );
+                        let response = api_client.update_status(&user_id, whereabouts_name);
                         match response {
                             Ok(_) => {
                                 log::debug!("Status successfully updated.");
