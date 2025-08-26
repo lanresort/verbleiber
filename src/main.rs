@@ -59,7 +59,9 @@ fn main() -> Result<()> {
 
     let api_client = ApiClient::new(&config.api);
 
-    sign_on(&api_client, &player)?;
+    let client = Client::new();
+
+    client.sign_on(&api_client, &player)?;
 
     for msg in rx.iter() {
         match msg {
@@ -149,7 +151,7 @@ fn main() -> Result<()> {
             }
             Event::ShutdownRequested => {
                 log::info!("Shutdown requested.");
-                sign_off(&api_client, &player)?;
+                client.sign_off(&api_client, &player)?;
                 log::info!("Shutting down ...");
                 break;
             }
@@ -165,26 +167,34 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
         .expect("Could not send shutdown signal")
 }
 
-fn sign_on(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
-    log::info!("Signing on ...");
-    match api_client.sign_on() {
-        Ok(()) => log::info!("Signed on."),
-        Err(e) => {
-            log::warn!("Signing on failed.\n{e}");
-            player.play("oh-nein-netzwerkfehler")?;
-        }
-    }
-    Ok(())
-}
+struct Client {}
 
-fn sign_off(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
-    log::info!("Signing off ...");
-    match api_client.sign_off() {
-        Ok(()) => log::info!("Signed off."),
-        Err(e) => {
-            log::warn!("Signing off failed.\n{e}");
-            player.play("oh-nein-netzwerkfehler")?;
-        }
+impl Client {
+    fn new() -> Self {
+        Self {}
     }
-    Ok(())
+
+    fn sign_on(&self, api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
+        log::info!("Signing on ...");
+        match api_client.sign_on() {
+            Ok(()) => log::info!("Signed on."),
+            Err(e) => {
+                log::warn!("Signing on failed.\n{e}");
+                player.play("oh-nein-netzwerkfehler")?;
+            }
+        }
+        Ok(())
+    }
+
+    fn sign_off(&self, api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
+        log::info!("Signing off ...");
+        match api_client.sign_off() {
+            Ok(()) => log::info!("Signed off."),
+            Err(e) => {
+                log::warn!("Signing off failed.\n{e}");
+                player.play("oh-nein-netzwerkfehler")?;
+            }
+        }
+        Ok(())
+    }
 }
