@@ -19,9 +19,10 @@ mod model;
 mod random;
 mod tagreader;
 
-use crate::api::ApiClient;
+use crate::api::{ApiClient, TagDetails};
 use crate::audio::AudioPlayer;
 use crate::buttons::Button;
+use crate::config::ApiConfig;
 use crate::events::Event;
 use crate::model::UserId;
 
@@ -57,11 +58,9 @@ fn main() -> Result<()> {
 
     let mut current_user_id: Option<UserId> = None;
 
-    let api_client = ApiClient::new(&config.api, config.party.party_id);
+    let client = Client::new(sounds_path, &config.api, config.party.party_id)?;
 
-    let client = Client::new(sounds_path)?;
-
-    client.sign_on(&api_client)?;
+    client.sign_on()?;
 
     for msg in rx.iter() {
         match msg {
@@ -69,7 +68,7 @@ fn main() -> Result<()> {
                 log::debug!("Tag read: {tag}");
 
                 log::debug!("Requesting details for tag {} ...", tag);
-                current_user_id = match api_client.get_tag_details(&tag) {
+                current_user_id = match client.get_tag_details(&tag) {
                     Ok(details) => match details {
                         Some(details) => {
                             log::debug!(
@@ -123,7 +122,7 @@ fn main() -> Result<()> {
                             "Submitting whereabouts for user {user_id} -> {whereabouts_name} ..."
                         );
 
-                        let response = api_client.update_status(&user_id, whereabouts_name);
+                        let response = client.update_status(&user_id, whereabouts_name);
                         match response {
                             Ok(_) => {
                                 log::debug!("Status successfully updated.");
@@ -147,7 +146,7 @@ fn main() -> Result<()> {
             }
             Event::ShutdownRequested => {
                 log::info!("Shutdown requested.");
-                client.sign_off(&api_client)?;
+                client.sign_off()?;
                 log::info!("Shutting down ...");
                 break;
             }
@@ -165,18 +164,20 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
 
 struct Client {
     audio_player: AudioPlayer,
+    api_client: ApiClient,
 }
 
 impl Client {
-    fn new(sounds_path: PathBuf) -> Result<Self> {
+    fn new(sounds_path: PathBuf, api_config: &ApiConfig, party_id: String) -> Result<Self> {
         Ok(Self {
             audio_player: AudioPlayer::new(sounds_path)?,
+            api_client: ApiClient::new(api_config, party_id),
         })
     }
 
-    fn sign_on(&self, api_client: &ApiClient) -> Result<()> {
+    fn sign_on(&self) -> Result<()> {
         log::info!("Signing on ...");
-        match api_client.sign_on() {
+        match self.api_client.sign_on() {
             Ok(()) => log::info!("Signed on."),
             Err(e) => {
                 log::warn!("Signing on failed.\n{e}");
@@ -186,9 +187,9 @@ impl Client {
         Ok(())
     }
 
-    fn sign_off(&self, api_client: &ApiClient) -> Result<()> {
+    fn sign_off(&self) -> Result<()> {
         log::info!("Signing off ...");
-        match api_client.sign_off() {
+        match self.api_client.sign_off() {
             Ok(()) => log::info!("Signed off."),
             Err(e) => {
                 log::warn!("Signing off failed.\n{e}");
@@ -196,6 +197,14 @@ impl Client {
             }
         }
         Ok(())
+    }
+
+    fn get_tag_details(&self, tag: &str) -> Result<Option<TagDetails>> {
+        self.api_client.get_tag_details(tag)
+    }
+
+    fn update_status(&self, user_id: &str, whereabouts_name: &str) -> Result<()> {
+        self.api_client.update_status(user_id, whereabouts_name)
     }
 
     fn play_sound(&self, name: &str) -> Result<()> {
