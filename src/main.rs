@@ -5,6 +5,7 @@
 
 use anyhow::Result;
 use flume::{Receiver, Sender};
+use std::path::PathBuf;
 use std::thread;
 
 mod api;
@@ -44,7 +45,6 @@ fn main() -> Result<()> {
     let mut random = random::Random::new();
 
     let sounds_path = config.sounds_path.clone();
-    let player = AudioPlayer::new(sounds_path)?;
 
     let (tx1, rx): (Sender<Event>, Receiver<Event>) = flume::unbounded();
     let tx2 = tx1.clone();
@@ -59,9 +59,9 @@ fn main() -> Result<()> {
 
     let api_client = ApiClient::new(&config.api);
 
-    let client = Client::new();
+    let client = Client::new(sounds_path)?;
 
-    client.sign_on(&api_client, &player)?;
+    client.sign_on(&api_client)?;
 
     for msg in rx.iter() {
         match msg {
@@ -81,7 +81,7 @@ fn main() -> Result<()> {
                             let user_id = details.user.id;
 
                             if let Some(name) = details.sound_name {
-                                player.play(&name)?;
+                                client.play_sound(&name)?;
                             }
 
                             log::debug!("Awaiting whereabouts for user {user_id} ...");
@@ -90,14 +90,14 @@ fn main() -> Result<()> {
                         }
                         None => {
                             log::info!("Unknown user tag: {tag}");
-                            player.play("unknown_user_tag")?;
+                            client.play_sound("unknown_user_tag")?;
 
                             None
                         }
                     },
                     Err(e) => {
                         log::warn!("Requesting tag details failed.\n{e}");
-                        player.play("oh-nein-netzwerkfehler")?;
+                        client.play_sound("oh-nein-netzwerkfehler")?;
 
                         None
                     }
@@ -136,12 +136,12 @@ fn main() -> Result<()> {
                                     config.party.whereabouts_sounds.get(*whereabouts_name)
                                 {
                                     let sound_name = random.choose_random_element(sound_names);
-                                    player.play(&sound_name)?;
+                                    client.play_sound(&sound_name)?;
                                 }
                             }
                             Err(e) => {
                                 log::warn!("Status update failed.\n{e}");
-                                player.play("oh-nein-netzwerkfehler")?;
+                                client.play_sound("oh-nein-netzwerkfehler")?;
                             }
                         }
                     }
@@ -151,7 +151,7 @@ fn main() -> Result<()> {
             }
             Event::ShutdownRequested => {
                 log::info!("Shutdown requested.");
-                client.sign_off(&api_client, &player)?;
+                client.sign_off(&api_client)?;
                 log::info!("Shutting down ...");
                 break;
             }
@@ -167,34 +167,42 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
         .expect("Could not send shutdown signal")
 }
 
-struct Client {}
+struct Client {
+    audio_player: AudioPlayer,
+}
 
 impl Client {
-    fn new() -> Self {
-        Self {}
+    fn new(sounds_path: PathBuf) -> Result<Self> {
+        Ok(Self {
+            audio_player: AudioPlayer::new(sounds_path)?,
+        })
     }
 
-    fn sign_on(&self, api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
+    fn sign_on(&self, api_client: &ApiClient) -> Result<()> {
         log::info!("Signing on ...");
         match api_client.sign_on() {
             Ok(()) => log::info!("Signed on."),
             Err(e) => {
                 log::warn!("Signing on failed.\n{e}");
-                player.play("oh-nein-netzwerkfehler")?;
+                self.play_sound("oh-nein-netzwerkfehler")?;
             }
         }
         Ok(())
     }
 
-    fn sign_off(&self, api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
+    fn sign_off(&self, api_client: &ApiClient) -> Result<()> {
         log::info!("Signing off ...");
         match api_client.sign_off() {
             Ok(()) => log::info!("Signed off."),
             Err(e) => {
                 log::warn!("Signing off failed.\n{e}");
-                player.play("oh-nein-netzwerkfehler")?;
+                self.play_sound("oh-nein-netzwerkfehler")?;
             }
         }
         Ok(())
+    }
+
+    fn play_sound(&self, name: &str) -> Result<()> {
+        self.audio_player.play(name)
     }
 }
