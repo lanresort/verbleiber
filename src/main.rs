@@ -5,7 +5,6 @@
 
 use anyhow::Result;
 use flume::{Receiver, Sender};
-use nanorand::{Rng, WyRand};
 use std::thread;
 
 mod api;
@@ -16,6 +15,7 @@ mod config;
 mod devices;
 mod events;
 mod model;
+mod random;
 mod tagreader;
 
 use crate::api::ApiClient;
@@ -41,7 +41,7 @@ fn main() -> Result<()> {
         "button input device".to_string(),
     )?;
 
-    let mut random = Random::new();
+    let mut random = random::Random::new();
 
     let sounds_path = config.sounds_path.clone();
     let player = AudioPlayer::new(sounds_path)?;
@@ -187,20 +187,4 @@ fn sign_off(api_client: &ApiClient, player: &AudioPlayer) -> Result<()> {
         }
     }
     Ok(())
-}
-
-struct Random {
-    rng: WyRand,
-}
-
-impl Random {
-    fn new() -> Self {
-        Self { rng: WyRand::new() }
-    }
-
-    fn choose_random_element(&mut self, elements: &[String]) -> String {
-        let random_index = self.rng.generate_range(0..elements.len());
-        let element = &elements[random_index];
-        element.to_owned()
-    }
 }
