@@ -11,17 +11,33 @@ use crate::devices;
 use crate::events::Event;
 
 pub(crate) fn handle_tag_reads(device_name: String, sender: Sender<Event>) -> Result<()> {
-    let device_label = "reader input device".to_string();
-    let mut device = devices::open_input_device_or_exit(device_name, device_label)?;
+    let tag_read_handler = TagReadHandler::new(sender);
+    tag_read_handler.run(device_name)?;
+    Ok(())
+}
 
-    let mut tag_reader = TagReader::new();
-    loop {
-        for event in device.fetch_events()? {
-            if let Some(value) = tag_reader.handle_event(event) {
-                let event = Event::TagRead {
-                    tag: value.to_string(),
-                };
-                sender.send(event)?;
+struct TagReadHandler {
+    sender: Sender<Event>,
+}
+
+impl TagReadHandler {
+    fn new(sender: Sender<Event>) -> Self {
+        Self { sender }
+    }
+
+    fn run(&self, device_name: String) -> Result<()> {
+        let device_label = "reader input device".to_string();
+        let mut device = devices::open_input_device_or_exit(device_name, device_label)?;
+
+        let mut tag_reader = TagReader::new();
+        loop {
+            for event in device.fetch_events()? {
+                if let Some(value) = tag_reader.handle_event(event) {
+                    let event = Event::TagRead {
+                        tag: value.to_string(),
+                    };
+                    self.sender.send(event)?;
+                }
             }
         }
     }
