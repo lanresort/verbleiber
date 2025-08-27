@@ -5,6 +5,7 @@
 
 use anyhow::Result;
 use flume::{Receiver, Sender};
+use simple_logger::SimpleLogger;
 use std::path::PathBuf;
 use std::thread;
 
@@ -27,7 +28,10 @@ use crate::events::Event;
 use crate::model::UserId;
 
 fn main() -> Result<()> {
-    simple_logger::init_with_level(log::Level::Debug)?;
+    SimpleLogger::new()
+        .with_level(log::LevelFilter::Warn)
+        .with_module_level("verbleiber", log::LevelFilter::Debug)
+        .init()?;
 
     let cli = cli::parse_cli();
 
