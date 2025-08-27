@@ -4,14 +4,15 @@
  */
 
 use anyhow::Result;
-use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
+use evdev::{EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
 
+use crate::devices;
 use crate::events::Event;
 
-pub(crate) fn handle_button_presses(device: Device, sender: Sender<Event>) -> Result<()> {
+pub(crate) fn handle_button_presses(device_name: String, sender: Sender<Event>) -> Result<()> {
     let button_handler = ButtonHandler::new(sender);
-    button_handler.run(device)?;
+    button_handler.run(device_name)?;
     Ok(())
 }
 
@@ -24,7 +25,10 @@ impl ButtonHandler {
         Self { sender }
     }
 
-    fn run(&self, mut device: Device) -> Result<()> {
+    fn run(&self, device_name: String) -> Result<()> {
+        let device_label = "button input device".to_string();
+        let mut device = devices::open_input_device_or_exit(device_name, device_label)?;
+
         loop {
             for event in device.fetch_events()? {
                 if let Some(button) = self.handle_button_press(event) {
