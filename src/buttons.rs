@@ -44,10 +44,12 @@ impl ButtonHandler {
             return None;
         }
 
-        match event.destructure() {
-            EventSummary::Key(_, key_code, _) => self.find_button_for_key_code(key_code),
+        let key_code = match event.destructure() {
+            EventSummary::Key(_, key_code, _) => Some(key_code),
             _ => None,
-        }
+        };
+
+        key_code.and_then(|kc| self.find_button_for_key_code(kc))
     }
 
     fn is_key_released(&self, event: InputEvent) -> bool {
