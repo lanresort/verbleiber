@@ -35,7 +35,7 @@ impl TagReader {
     }
 
     fn handle_event(&mut self, event: InputEvent) -> Option<String> {
-        if !is_key_released(event) {
+        if !self.is_key_released(event) {
             return None;
         }
 
@@ -48,7 +48,7 @@ impl TagReader {
 
                     Some(input.to_owned())
                 }
-                key_code => match get_char(key_code) {
+                key_code => match self.get_char(key_code) {
                     Some(ch) => {
                         self.chars_read.push(ch);
                         None
@@ -60,24 +60,24 @@ impl TagReader {
             None
         }
     }
-}
 
-fn get_char(key_code: KeyCode) -> Option<char> {
-    match key_code {
-        KeyCode::KEY_1 => Some('1'),
-        KeyCode::KEY_2 => Some('2'),
-        KeyCode::KEY_3 => Some('3'),
-        KeyCode::KEY_4 => Some('4'),
-        KeyCode::KEY_5 => Some('5'),
-        KeyCode::KEY_6 => Some('6'),
-        KeyCode::KEY_7 => Some('7'),
-        KeyCode::KEY_8 => Some('8'),
-        KeyCode::KEY_9 => Some('9'),
-        KeyCode::KEY_0 => Some('0'),
-        _ => None,
+    fn is_key_released(&self, event: InputEvent) -> bool {
+        event.event_type() == EventType::KEY && event.value() == 0
     }
-}
 
-fn is_key_released(event: InputEvent) -> bool {
-    event.event_type() == EventType::KEY && event.value() == 0
+    fn get_char(&self, key_code: KeyCode) -> Option<char> {
+        match key_code {
+            KeyCode::KEY_1 => Some('1'),
+            KeyCode::KEY_2 => Some('2'),
+            KeyCode::KEY_3 => Some('3'),
+            KeyCode::KEY_4 => Some('4'),
+            KeyCode::KEY_5 => Some('5'),
+            KeyCode::KEY_6 => Some('6'),
+            KeyCode::KEY_7 => Some('7'),
+            KeyCode::KEY_8 => Some('8'),
+            KeyCode::KEY_9 => Some('9'),
+            KeyCode::KEY_0 => Some('0'),
+            _ => None,
+        }
+    }
 }
