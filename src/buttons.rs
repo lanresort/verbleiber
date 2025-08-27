@@ -10,24 +10,26 @@ use flume::Sender;
 use crate::events::Event;
 
 pub(crate) fn handle_button_presses(device: Device, sender: Sender<Event>) -> Result<()> {
-    let button_handler = ButtonHandler::new();
-    button_handler.run(device, sender)?;
+    let button_handler = ButtonHandler::new(sender);
+    button_handler.run(device)?;
     Ok(())
 }
 
-struct ButtonHandler {}
+struct ButtonHandler {
+    sender: Sender<Event>,
+}
 
 impl ButtonHandler {
-    fn new() -> Self {
-        Self {}
+    fn new(sender: Sender<Event>) -> Self {
+        Self { sender }
     }
 
-    fn run(&self, mut device: Device, sender: Sender<Event>) -> Result<()> {
+    fn run(&self, mut device: Device) -> Result<()> {
         loop {
             for event in device.fetch_events()? {
                 if let Some(button) = self.handle_button_press(event) {
                     let event = Event::ButtonPressed { button };
-                    sender.send(event)?;
+                    self.sender.send(event)?;
                 }
             }
         }
