@@ -3,7 +3,7 @@
  * License: MIT
  */
 
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use evdev::Device;
 use std::process::exit;
 
@@ -17,9 +17,9 @@ pub(crate) fn open_input_device_or_exit(device_name: String, label: String) -> R
     }
 }
 
-fn open_input_device(device_name: String, label: String) -> Result<Device, String> {
+pub(crate) fn open_input_device(device_name: String, label: String) -> Result<Device> {
     Device::open(device_name)
-        .map_err(|e| format!("Could not open {}: {}", label, e))
+        .map_err(|e| anyhow!("Could not open {}: {}", label, e))
         .and_then(|mut device| {
             log::info!(
                 "Opened {} \"{}\".",
@@ -32,10 +32,10 @@ fn open_input_device(device_name: String, label: String) -> Result<Device, Strin
         })
 }
 
-fn grab_reader_input_device(device: &mut Device, label: String) -> Result<(), String> {
+fn grab_reader_input_device(device: &mut Device, label: String) -> Result<()> {
     device
         .grab()
-        .map_err(|e| format!("Could not get exclusive access to {}: {}", label, e))
+        .map_err(|e| anyhow!("Could not get exclusive access to {}: {}", label, e))
         .map(|()| {
             log::info!("Successfully obtained exclusive access to {}.", label);
         })
