@@ -3,6 +3,8 @@
  * License: MIT
  */
 
+use std::collections::HashMap;
+
 use anyhow::Result;
 use evdev::{EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
@@ -11,18 +13,33 @@ use crate::devices;
 use crate::events::Event;
 
 pub(crate) fn handle_button_presses(device_name: String, sender: Sender<Event>) -> Result<()> {
-    let button_handler = ButtonHandler::new(sender);
+    let key_codes_to_buttons = map_key_codes_to_buttons();
+
+    let button_handler = ButtonHandler::new(key_codes_to_buttons, sender);
     button_handler.run(device_name)?;
     Ok(())
 }
 
+fn map_key_codes_to_buttons() -> HashMap<KeyCode, Button> {
+    HashMap::from([
+        (KeyCode::BTN_TRIGGER, Button::Button1),
+        (KeyCode::BTN_THUMB, Button::Button2),
+        (KeyCode::BTN_THUMB2, Button::Button3),
+        (KeyCode::BTN_TOP, Button::Button4),
+    ])
+}
+
 struct ButtonHandler {
+    key_codes_to_buttons: HashMap<KeyCode, Button>,
     sender: Sender<Event>,
 }
 
 impl ButtonHandler {
-    fn new(sender: Sender<Event>) -> Self {
-        Self { sender }
+    fn new(key_codes_to_buttons: HashMap<KeyCode, Button>, sender: Sender<Event>) -> Self {
+        Self {
+            key_codes_to_buttons,
+            sender,
+        }
     }
 
     fn run(&self, device_name: String) -> Result<()> {
@@ -57,17 +74,11 @@ impl ButtonHandler {
     }
 
     fn find_button_for_key_code(&self, key_code: KeyCode) -> Option<Button> {
-        match key_code {
-            KeyCode::BTN_TRIGGER => Some(Button::Button1),
-            KeyCode::BTN_THUMB => Some(Button::Button2),
-            KeyCode::BTN_THUMB2 => Some(Button::Button3),
-            KeyCode::BTN_TOP => Some(Button::Button4),
-            _ => None,
-        }
+        self.key_codes_to_buttons.get(&key_code).cloned()
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub(crate) enum Button {
     Button1,
     Button2,
