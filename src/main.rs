@@ -33,11 +33,6 @@ fn main() -> Result<()> {
 
     let config = config::load_config(&cli.config_filename)?;
 
-    let reader_input_device = devices::open_input_device_or_exit(
-        config.reader_input_device,
-        "reader input device".to_string(),
-    )?;
-
     let sounds_path = config.sounds_path.clone();
 
     let (tx1, rx): (Sender<Event>, Receiver<Event>) = flume::unbounded();
@@ -46,7 +41,7 @@ fn main() -> Result<()> {
 
     ctrlc::set_handler(move || handle_ctrl_c(&tx1)).expect("Could not set Ctrl-C handler");
 
-    thread::spawn(|| tagreader::handle_tag_reads(reader_input_device, tx2));
+    thread::spawn(|| tagreader::handle_tag_reads(config.reader_input_device, tx2));
     thread::spawn(|| buttons::handle_button_presses(config.button_input_device, tx3));
 
     let client = Client::new(sounds_path, &config.api, config.party.party_id.to_string())?;
