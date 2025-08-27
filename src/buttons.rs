@@ -9,39 +9,53 @@ use flume::Sender;
 
 use crate::events::Event;
 
-pub(crate) fn handle_button_presses(mut device: Device, sender: Sender<Event>) -> Result<()> {
-    loop {
-        for event in device.fetch_events()? {
-            if let Some(button) = handle_button_press(event) {
-                let event = Event::ButtonPressed { button };
-                sender.send(event)?;
+pub(crate) fn handle_button_presses(device: Device, sender: Sender<Event>) -> Result<()> {
+    let button_handler = ButtonHandler::new();
+    button_handler.run(device, sender)?;
+    Ok(())
+}
+
+struct ButtonHandler {}
+
+impl ButtonHandler {
+    fn new() -> Self {
+        Self {}
+    }
+
+    fn run(&self, mut device: Device, sender: Sender<Event>) -> Result<()> {
+        loop {
+            for event in device.fetch_events()? {
+                if let Some(button) = self.handle_button_press(event) {
+                    let event = Event::ButtonPressed { button };
+                    sender.send(event)?;
+                }
             }
         }
     }
-}
 
-fn handle_button_press(event: InputEvent) -> Option<Button> {
-    if !is_key_released(event) {
-        return None;
+    fn handle_button_press(&self, event: InputEvent) -> Option<Button> {
+        if !self.is_key_released(event) {
+            return None;
+        }
+
+        match event.destructure() {
+            EventSummary::Key(_, key_code, _) => self.find_button_for_key_code(key_code),
+            _ => None,
+        }
     }
 
-    match event.destructure() {
-        EventSummary::Key(_, key_code, _) => find_button_for_key_code(key_code),
-        _ => None,
+    fn is_key_released(&self, event: InputEvent) -> bool {
+        event.event_type() == EventType::KEY && event.value() == 0
     }
-}
 
-fn is_key_released(event: InputEvent) -> bool {
-    event.event_type() == EventType::KEY && event.value() == 0
-}
-
-fn find_button_for_key_code(key_code: KeyCode) -> Option<Button> {
-    match key_code {
-        KeyCode::BTN_TRIGGER => Some(Button::Button1),
-        KeyCode::BTN_THUMB => Some(Button::Button2),
-        KeyCode::BTN_THUMB2 => Some(Button::Button3),
-        KeyCode::BTN_TOP => Some(Button::Button4),
-        _ => None,
+    fn find_button_for_key_code(&self, key_code: KeyCode) -> Option<Button> {
+        match key_code {
+            KeyCode::BTN_TRIGGER => Some(Button::Button1),
+            KeyCode::BTN_THUMB => Some(Button::Button2),
+            KeyCode::BTN_THUMB2 => Some(Button::Button3),
+            KeyCode::BTN_TOP => Some(Button::Button4),
+            _ => None,
+        }
     }
 }
 
