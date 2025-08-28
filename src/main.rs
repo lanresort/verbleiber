@@ -34,7 +34,15 @@ fn main() -> Result<()> {
 
     let cli = cli::parse_cli();
 
-    let config = config::load_config(&cli.config_filename)?;
+    match cli.command {
+        cli::Command::Run { config_filename } => run(config_filename)?,
+    }
+
+    Ok(())
+}
+
+fn run(config_filename: PathBuf) -> Result<()> {
+    let config = config::load_config(&config_filename)?;
 
     let sounds_path = config.sounds_path.clone();
 

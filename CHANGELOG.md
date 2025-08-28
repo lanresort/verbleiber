@@ -3,6 +3,9 @@
 
 ## 0.7.0 (unreleased)
 
+- Introduced subcommands. To run the application as usual, use
+  `verbleiber run` instead of just `verbleiber`.
+
 - Made button mapping configurable. Added new section
   `buttons_to_key_codes` to the configuration file format.
 

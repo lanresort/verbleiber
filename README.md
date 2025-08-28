@@ -54,11 +54,11 @@ provides such symlinks in `/dev/input/by-id`) so they are independent of
 the varying event device number they get assigned depending on the order
 they are connected to the host and other factors.
 
-Start the application by specifying a configuration file
-(`-c`/`--config`):
+Start the application using the `run` subcommand and specifying a
+configuration file (via option `-c`/`--config`):
 
 ```sh
-$ verbleiber -c config.toml
+$ verbleiber run -c config.toml
 ```
 
 
