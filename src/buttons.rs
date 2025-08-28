@@ -14,8 +14,10 @@ use crate::events::Event;
 pub(crate) fn handle_button_presses(device_name: String, sender: Sender<Event>) -> Result<()> {
     let key_codes_to_buttons = map_key_codes_to_buttons();
 
+    let device = open_device(device_name)?;
+
     let button_handler = ButtonHandler::new(key_codes_to_buttons, sender);
-    button_handler.run(device_name)?;
+    button_handler.run(device)?;
     Ok(())
 }
 
@@ -46,9 +48,7 @@ impl ButtonHandler {
         }
     }
 
-    fn run(&self, device_name: String) -> Result<()> {
-        let mut device = open_device(device_name)?;
-
+    fn run(&self, mut device: Device) -> Result<()> {
         loop {
             for event in device.fetch_events()? {
                 if let Some(button) = self.handle_button_press(event) {

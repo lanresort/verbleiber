@@ -11,8 +11,10 @@ use crate::devices;
 use crate::events::Event;
 
 pub(crate) fn handle_tag_reads(device_name: String, sender: Sender<Event>) -> Result<()> {
+    let device = open_device(device_name)?;
+
     let tag_read_handler = TagReadHandler::new(sender);
-    tag_read_handler.run(device_name)?;
+    tag_read_handler.run(device)?;
     Ok(())
 }
 
@@ -30,9 +32,7 @@ impl TagReadHandler {
         Self { sender }
     }
 
-    fn run(&self, device_name: String) -> Result<()> {
-        let mut device = open_device(device_name)?;
-
+    fn run(&self, mut device: Device) -> Result<()> {
         let mut tag_reader = TagReader::new();
         loop {
             for event in device.fetch_events()? {
