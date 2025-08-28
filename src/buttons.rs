@@ -4,7 +4,7 @@
  */
 
 use anyhow::Result;
-use evdev::{EventSummary, EventType, InputEvent, KeyCode};
+use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
 use std::collections::HashMap;
 
@@ -28,6 +28,11 @@ fn map_key_codes_to_buttons() -> HashMap<KeyCode, Button> {
     ])
 }
 
+fn open_device(device_name: String) -> Result<Device> {
+    let device_label = "button input device".to_string();
+    devices::open_input_device_or_exit(device_name, device_label)
+}
+
 struct ButtonHandler {
     key_codes_to_buttons: HashMap<KeyCode, Button>,
     sender: Sender<Event>,
@@ -42,8 +47,7 @@ impl ButtonHandler {
     }
 
     fn run(&self, device_name: String) -> Result<()> {
-        let device_label = "button input device".to_string();
-        let mut device = devices::open_input_device_or_exit(device_name, device_label)?;
+        let mut device = open_device(device_name)?;
 
         loop {
             for event in device.fetch_events()? {

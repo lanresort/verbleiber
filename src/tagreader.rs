@@ -4,7 +4,7 @@
  */
 
 use anyhow::Result;
-use evdev::{EventSummary, EventType, InputEvent, KeyCode};
+use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
 
 use crate::devices;
@@ -14,6 +14,11 @@ pub(crate) fn handle_tag_reads(device_name: String, sender: Sender<Event>) -> Re
     let tag_read_handler = TagReadHandler::new(sender);
     tag_read_handler.run(device_name)?;
     Ok(())
+}
+
+fn open_device(device_name: String) -> Result<Device> {
+    let device_label = "reader input device".to_string();
+    devices::open_input_device_or_exit(device_name, device_label)
 }
 
 struct TagReadHandler {
@@ -26,8 +31,7 @@ impl TagReadHandler {
     }
 
     fn run(&self, device_name: String) -> Result<()> {
-        let device_label = "reader input device".to_string();
-        let mut device = devices::open_input_device_or_exit(device_name, device_label)?;
+        let mut device = open_device(device_name)?;
 
         let mut tag_reader = TagReader::new();
         loop {
