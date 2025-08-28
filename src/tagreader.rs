@@ -6,6 +6,7 @@
 use anyhow::Result;
 use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
+use std::thread;
 
 use crate::devices;
 use crate::events::Event;
@@ -14,7 +15,7 @@ pub(crate) fn handle_tag_reads(device_name: String, sender: Sender<Event>) -> Re
     let device = open_device(device_name)?;
 
     let tag_read_handler = TagReadHandler::new(sender);
-    tag_read_handler.run(device)?;
+    thread::spawn(move || tag_read_handler.run(device));
     Ok(())
 }
 

@@ -7,6 +7,7 @@ use anyhow::Result;
 use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
 use std::collections::HashMap;
+use std::thread;
 
 use crate::devices;
 use crate::events::Event;
@@ -17,7 +18,7 @@ pub(crate) fn handle_button_presses(device_name: String, sender: Sender<Event>) 
     let device = open_device(device_name)?;
 
     let button_handler = ButtonHandler::new(key_codes_to_buttons, sender);
-    button_handler.run(device)?;
+    thread::spawn(move || button_handler.run(device));
     Ok(())
 }
 
