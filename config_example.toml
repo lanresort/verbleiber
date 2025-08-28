@@ -7,6 +7,10 @@ button1 = "trigger"
 button2 = "thumb"
 button3 = "thumb2"
 button4 = "top"
+button5 = "tl"
+button6 = "tr"
+button7 = "tl2"
+button8 = "tr2"
 
 [api]
 base_url = "https://byceps.example/api/v1/whereabouts"
