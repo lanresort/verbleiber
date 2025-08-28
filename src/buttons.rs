@@ -33,7 +33,7 @@ fn map_key_codes_to_buttons() -> HashMap<KeyCode, Button> {
 
 fn open_device(device_name: String) -> Result<Device> {
     let device_label = "button input device".to_string();
-    devices::open_input_device_or_exit(device_name, device_label)
+    devices::open_input_device(device_name, device_label)
 }
 
 struct ButtonHandler {

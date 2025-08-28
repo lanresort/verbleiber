@@ -5,17 +5,6 @@
 
 use anyhow::{Result, anyhow};
 use evdev::Device;
-use std::process::exit;
-
-pub(crate) fn open_input_device_or_exit(device_name: String, label: String) -> Result<Device> {
-    match open_input_device(device_name, label) {
-        Ok(device) => Ok(device),
-        Err(e) => {
-            log::error!("{}", e);
-            exit(1);
-        }
-    }
-}
 
 pub(crate) fn open_input_device(device_name: String, label: String) -> Result<Device> {
     Device::open(device_name)
