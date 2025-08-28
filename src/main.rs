@@ -182,8 +182,7 @@ impl Client {
         button: Button,
         party_config: &PartyConfig,
     ) -> Result<()> {
-        let button_name = self.get_button_name(button);
-        if let Some(whereabouts_name) = &party_config.buttons_to_whereabouts.get(&button_name) {
+        if let Some(whereabouts_name) = &party_config.buttons_to_whereabouts.get(&button) {
             log::debug!("Submitting whereabouts for user {user_id} -> {whereabouts_name} ...");
 
             let response = self.update_status(&user_id, whereabouts_name);
@@ -204,15 +203,6 @@ impl Client {
             }
         }
         Ok(())
-    }
-
-    fn get_button_name(&self, button: Button) -> String {
-        match button {
-            Button::Button1 => "button1".to_string(),
-            Button::Button2 => "button2".to_string(),
-            Button::Button3 => "button3".to_string(),
-            Button::Button4 => "button4".to_string(),
-        }
     }
 
     fn update_status(&self, user_id: &str, whereabouts_name: &str) -> Result<()> {

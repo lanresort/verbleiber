@@ -6,6 +6,7 @@
 use anyhow::Result;
 use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::thread;
 
@@ -82,7 +83,8 @@ impl ButtonHandler {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq)]
+#[serde(rename_all = "snake_case")]
 pub(crate) enum Button {
     Button1,
     Button2,

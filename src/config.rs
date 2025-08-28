@@ -9,6 +9,8 @@ use std::collections::HashMap;
 use std::fs::read_to_string;
 use std::path::{Path, PathBuf};
 
+use crate::buttons::Button;
+
 #[derive(Deserialize)]
 pub(crate) struct Config {
     pub reader_input_device: String,
@@ -29,7 +31,7 @@ pub(crate) struct ApiConfig {
 #[derive(Deserialize)]
 pub(crate) struct PartyConfig {
     pub party_id: String,
-    pub buttons_to_whereabouts: HashMap<String, String>,
+    pub buttons_to_whereabouts: HashMap<Button, String>,
     pub whereabouts_sounds: HashMap<String, Vec<String>>,
 }
 
