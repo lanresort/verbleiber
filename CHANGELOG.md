@@ -3,6 +3,9 @@
 
 ## 0.7.0 (unreleased)
 
+- Made button mapping configurable. Added new section
+  `buttons_to_key_codes` to the configuration file format.
+
 - Changed `Bearer` authorization header value from API token to client
   token for sign-on, sign-off, tag retrieval, and status update
   endpoints.

@@ -2,6 +2,12 @@ reader_input_device = "/dev/input/event23"
 button_input_device = "/dev/input/event42"
 sounds_path = "sounds"
 
+[buttons_to_key_codes]
+button1 = "trigger"
+button2 = "thumb"
+button3 = "thumb2"
+button4 = "top"
+
 [api]
 base_url = "https://byceps.example/api/v1/whereabouts"
 client_token = "YOUR-CLIENT-TOKEN-GOES-HERE"

@@ -3,7 +3,7 @@
  * License: MIT
  */
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
 use serde::Deserialize;
@@ -13,8 +13,12 @@ use std::thread;
 use crate::devices;
 use crate::events::Event;
 
-pub(crate) fn handle_button_presses(device_name: String, sender: Sender<Event>) -> Result<()> {
-    let key_codes_to_buttons = map_key_codes_to_buttons();
+pub(crate) fn handle_button_presses(
+    device_name: String,
+    buttons_to_key_code_names: HashMap<Button, String>,
+    sender: Sender<Event>,
+) -> Result<()> {
+    let key_codes_to_buttons = map_key_codes_to_buttons(buttons_to_key_code_names)?;
 
     let device = open_device(device_name)?;
 
@@ -23,13 +27,19 @@ pub(crate) fn handle_button_presses(device_name: String, sender: Sender<Event>) 
     Ok(())
 }
 
-fn map_key_codes_to_buttons() -> HashMap<KeyCode, Button> {
-    HashMap::from([
-        (KeyCode::BTN_TRIGGER, Button::Button1),
-        (KeyCode::BTN_THUMB, Button::Button2),
-        (KeyCode::BTN_THUMB2, Button::Button3),
-        (KeyCode::BTN_TOP, Button::Button4),
-    ])
+fn map_key_codes_to_buttons(
+    buttons_to_key_code_names: HashMap<Button, String>,
+) -> Result<HashMap<KeyCode, Button>> {
+    let mut key_codes_to_buttons: HashMap<KeyCode, Button> = HashMap::new();
+
+    for (button, key_code_name) in buttons_to_key_code_names {
+        let key_code = find_key_code_by_name(&key_code_name)
+            .with_context(|| format!("Unknown button key code name '{}'", key_code_name))?;
+
+        key_codes_to_buttons.insert(key_code, button);
+    }
+
+    Ok(key_codes_to_buttons)
 }
 
 fn open_device(device_name: String) -> Result<Device> {
@@ -80,6 +90,16 @@ impl ButtonHandler {
 
     fn find_button_for_key_code(&self, key_code: KeyCode) -> Option<Button> {
         self.key_codes_to_buttons.get(&key_code).cloned()
+    }
+}
+
+fn find_key_code_by_name(name: &str) -> Option<KeyCode> {
+    match name {
+        "trigger" => Some(KeyCode::BTN_TRIGGER),
+        "thumb" => Some(KeyCode::BTN_THUMB),
+        "thumb2" => Some(KeyCode::BTN_THUMB2),
+        "top" => Some(KeyCode::BTN_TOP),
+        _ => None,
     }
 }
 

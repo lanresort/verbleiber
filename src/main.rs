@@ -45,7 +45,11 @@ fn main() -> Result<()> {
     ctrlc::set_handler(move || handle_ctrl_c(&tx1)).expect("Could not set Ctrl-C handler");
 
     tagreader::handle_tag_reads(config.reader_input_device, tx2)?;
-    buttons::handle_button_presses(config.button_input_device, tx3)?;
+    buttons::handle_button_presses(
+        config.button_input_device,
+        config.buttons_to_key_code_names,
+        tx3,
+    )?;
 
     let client = Client::new(sounds_path, &config.api, config.party.party_id.to_string())?;
 

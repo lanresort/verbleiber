@@ -15,6 +15,10 @@ use crate::buttons::Button;
 pub(crate) struct Config {
     pub reader_input_device: String,
     pub button_input_device: String,
+
+    #[serde(rename = "buttons_to_key_codes")]
+    pub buttons_to_key_code_names: HashMap<Button, String>,
+
     pub sounds_path: PathBuf,
     pub api: ApiConfig,
     pub party: PartyConfig,
