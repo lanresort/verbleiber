@@ -29,7 +29,7 @@
 
 - Fixed outdated property name in exemplary configuration file.
 
-- Updated clap to v4.5.45.
+- Updated clap to v4.5.47.
 
 - Updated nanorand to v0.8.0.
 
