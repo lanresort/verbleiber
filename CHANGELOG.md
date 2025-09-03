@@ -1,7 +1,7 @@
 # Changelog
 
 
-## 0.7.0 (unreleased)
+## 0.7.0 (2025-09-03)
 
 - Introduced subcommands. To run the application as usual, use
   `verbleiber run` instead of just `verbleiber`.
