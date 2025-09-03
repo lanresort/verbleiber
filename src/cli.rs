@@ -16,6 +16,25 @@ pub(crate) struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub(crate) enum Command {
+    /// Register a Verbleiber client
+    Register {
+        /// Specify API hots
+        #[clap(long = "base-url")]
+        base_url: String,
+
+        /// Supply number of buttons
+        #[clap(long = "button-count")]
+        button_count: u8,
+
+        /// Specify if device has audio output
+        #[clap(long = "audio-output")]
+        audio_output: bool,
+
+        /// Disable TLS verification
+        #[clap(long = "no-tls-verify")]
+        disable_tls_verification: bool,
+    },
+
     /// Run the Verbleiber client
     Run {
         /// Specify configuration filename (e.g. `config.toml`)

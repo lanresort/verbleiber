@@ -54,7 +54,19 @@ provides such symlinks in `/dev/input/by-id`) so they are independent of
 the varying event device number they get assigned depending on the order
 they are connected to the host and other factors.
 
-Start the application using the `run` subcommand and specifying a
+To register a new client, send a registration request to the API:
+
+```sh
+$ verbleiber register --base-url 'https://api.byceps.internal/v1/whereabouts' --audio-output --button-count 3 --no-tls-verify
+```
+
+Then check BYCEPS' admin frontend for a new client candidate and approve
+it.
+
+After a few seconds, Verbleiber should then print the client token. Add
+that to your configuration file.
+
+Now start the application using the `run` subcommand and specifying a
 configuration file (via option `-c`/`--config`):
 
 ```sh

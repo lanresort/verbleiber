@@ -6,6 +6,8 @@
 - Introduced subcommands. To run the application as usual, use
   `verbleiber run` instead of just `verbleiber`.
 
+- Added subcommand `register` to register a new client with the API.
+
 - Made button mapping configurable. Added new section
   `buttons_to_key_codes` to the configuration file format.
 

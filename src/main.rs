@@ -18,6 +18,7 @@ mod events;
 mod http;
 mod model;
 mod random;
+mod registration;
 mod tagreader;
 
 use crate::api::ApiClient;
@@ -36,6 +37,17 @@ fn main() -> Result<()> {
     let cli = cli::parse_cli();
 
     match cli.command {
+        cli::Command::Register {
+            base_url,
+            button_count,
+            audio_output,
+            disable_tls_verification,
+        } => registration::register(
+            &base_url,
+            button_count,
+            audio_output,
+            disable_tls_verification,
+        )?,
         cli::Command::Run { config_filename } => run(config_filename)?,
     }
 
