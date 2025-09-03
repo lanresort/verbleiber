@@ -57,7 +57,7 @@ they are connected to the host and other factors.
 To register a new client, send a registration request to the API:
 
 ```sh
-$ verbleiber register --base-url 'https://api.byceps.internal/v1/whereabouts' --audio-output --button-count 3 --no-tls-verify
+$ verbleiber register --base-url 'https://api.byceps.example/v1/whereabouts' --audio-output --button-count 3 --no-tls-verify
 ```
 
 Then check BYCEPS' admin frontend for a new client candidate and approve
