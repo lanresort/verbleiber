@@ -6,10 +6,10 @@
 use anyhow::{Result, anyhow};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
-use ureq::tls::TlsConfig;
 use ureq::{Agent, Error};
 
 use crate::config::ApiConfig;
+use crate::http::build_agent;
 
 pub(crate) struct ApiClient {
     pub base_url: String,
@@ -44,15 +44,10 @@ impl ApiClient {
             base_url: config.base_url.to_owned(),
             client_token: config.client_token.to_owned(),
             party_id,
-            agent: Agent::config_builder()
-                .timeout_global(Some(Duration::from_secs(config.timeout_in_seconds)))
-                .tls_config(
-                    TlsConfig::builder()
-                        .disable_verification(!config.tls_verify)
-                        .build(),
-                )
-                .build()
-                .into(),
+            agent: build_agent(
+                Duration::from_secs(config.timeout_in_seconds),
+                !config.tls_verify,
+            ),
         }
     }
 

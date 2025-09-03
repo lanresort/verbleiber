@@ -15,6 +15,7 @@ mod cli;
 mod config;
 mod devices;
 mod events;
+mod http;
 mod model;
 mod random;
 mod tagreader;
