@@ -16,12 +16,13 @@ pub(crate) fn open_input_device(device_name: String, label: String) -> Result<De
                 device.name().unwrap_or("unnamed device")
             );
 
-            grab_reader_input_device(&mut device, label)?;
+            grab_input_device(&mut device, label)?;
+
             Ok(device)
         })
 }
 
-fn grab_reader_input_device(device: &mut Device, label: String) -> Result<()> {
+fn grab_input_device(device: &mut Device, label: String) -> Result<()> {
     device
         .grab()
         .map_err(|e| anyhow!("Could not get exclusive access to {}: {}", label, e))
