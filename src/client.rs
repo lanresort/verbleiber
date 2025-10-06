@@ -30,6 +30,17 @@ impl Client {
         })
     }
 
+    pub fn run(
+        &mut self,
+        event_receiver: Receiver<Event>,
+        party_config: &PartyConfig,
+        user_mode: &UserMode,
+    ) -> Result<()> {
+        self.sign_on()?;
+        self.handle_events(event_receiver, party_config, user_mode)?;
+        Ok(())
+    }
+
     pub fn handle_events(
         &mut self,
         event_receiver: Receiver<Event>,

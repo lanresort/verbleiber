@@ -84,10 +84,7 @@ fn run(config_filename: PathBuf) -> Result<()> {
     )?;
 
     let mut client = Client::new(sounds_path, &config.api, &party.party_id)?;
-
-    client.sign_on()?;
-
-    client.handle_events(rx, party, &user_mode)?;
+    client.run(rx, party, &user_mode)?;
 
     Ok(())
 }
