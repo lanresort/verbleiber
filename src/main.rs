@@ -26,7 +26,7 @@ use crate::audio::AudioPlayer;
 use crate::buttons::Button;
 use crate::config::{ApiConfig, PartyConfig};
 use crate::events::Event;
-use crate::model::UserId;
+use crate::model::{PartyId, UserId};
 
 fn main() -> Result<()> {
     SimpleLogger::new()
@@ -72,7 +72,7 @@ fn run(config_filename: PathBuf) -> Result<()> {
         tx3,
     )?;
 
-    let client = Client::new(sounds_path, &config.api, config.party.party_id.to_string())?;
+    let client = Client::new(sounds_path, &config.api, config.party.party_id.clone())?;
 
     client.sign_on()?;
 
@@ -132,7 +132,7 @@ struct Client {
 }
 
 impl Client {
-    fn new(sounds_path: PathBuf, api_config: &ApiConfig, party_id: String) -> Result<Self> {
+    fn new(sounds_path: PathBuf, api_config: &ApiConfig, party_id: PartyId) -> Result<Self> {
         Ok(Self {
             audio_player: AudioPlayer::new(sounds_path)?,
             random: random::Random::new(),

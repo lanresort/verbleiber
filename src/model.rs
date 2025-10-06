@@ -3,4 +3,6 @@
  * License: MIT
  */
 
+pub(crate) type PartyId = String;
+
 pub(crate) type UserId = String;

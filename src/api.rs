@@ -10,12 +10,12 @@ use ureq::{Agent, Error};
 
 use crate::config::ApiConfig;
 use crate::http::build_agent;
-use crate::model::UserId;
+use crate::model::{PartyId, UserId};
 
 pub(crate) struct ApiClient {
     pub base_url: String,
     pub client_token: String,
-    pub party_id: String,
+    pub party_id: PartyId,
     agent: Agent,
 }
 
@@ -40,7 +40,7 @@ pub(crate) struct TagUser {
 }
 
 impl ApiClient {
-    pub(crate) fn new(config: &ApiConfig, party_id: String) -> Self {
+    pub(crate) fn new(config: &ApiConfig, party_id: PartyId) -> Self {
         Self {
             base_url: config.base_url.to_owned(),
             client_token: config.client_token.to_owned(),

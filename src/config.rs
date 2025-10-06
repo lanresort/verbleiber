@@ -10,6 +10,7 @@ use std::fs::read_to_string;
 use std::path::{Path, PathBuf};
 
 use crate::buttons::Button;
+use crate::model::PartyId;
 
 #[derive(Deserialize)]
 pub(crate) struct Config {
@@ -34,7 +35,7 @@ pub(crate) struct ApiConfig {
 
 #[derive(Deserialize)]
 pub(crate) struct PartyConfig {
-    pub party_id: String,
+    pub party_id: PartyId,
     pub buttons_to_whereabouts: HashMap<Button, String>,
     pub whereabouts_sounds: HashMap<String, Vec<String>>,
 }
