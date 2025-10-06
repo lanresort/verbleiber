@@ -10,6 +10,7 @@ use ureq::{Agent, Error};
 
 use crate::config::ApiConfig;
 use crate::http::build_agent;
+use crate::model::UserId;
 
 pub(crate) struct ApiClient {
     pub base_url: String,
@@ -20,7 +21,7 @@ pub(crate) struct ApiClient {
 
 #[derive(Debug, Serialize)]
 pub(crate) struct StatusUpdate {
-    pub user_id: String,
+    pub user_id: UserId,
     pub party_id: String,
     pub whereabouts_name: String,
 }
@@ -34,7 +35,7 @@ pub(crate) struct TagDetails {
 
 #[derive(Debug, Deserialize)]
 pub(crate) struct TagUser {
-    pub id: String,
+    pub id: UserId,
     pub screen_name: Option<String>,
 }
 
@@ -100,7 +101,7 @@ impl ApiClient {
         }
     }
 
-    pub(crate) fn update_status(&self, user_id: &str, whereabouts_name: &str) -> Result<()> {
+    pub(crate) fn update_status(&self, user_id: &UserId, whereabouts_name: &str) -> Result<()> {
         let url = format!("{}/statuses", self.base_url);
 
         match self

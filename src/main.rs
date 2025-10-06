@@ -183,7 +183,7 @@ impl Client {
 
                     log::debug!("Awaiting whereabouts for user {user_id} ...");
 
-                    Ok(Some(user_id.to_string()))
+                    Ok(Some(user_id))
                 }
                 None => {
                     log::info!("Unknown user tag: {tag}");
@@ -230,7 +230,7 @@ impl Client {
         Ok(())
     }
 
-    fn update_status(&self, user_id: &str, whereabouts_name: &str) -> Result<()> {
+    fn update_status(&self, user_id: &UserId, whereabouts_name: &str) -> Result<()> {
         self.api_client.update_status(user_id, whereabouts_name)
     }
 
