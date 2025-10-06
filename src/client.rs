@@ -13,13 +13,14 @@ use crate::audio::AudioPlayer;
 use crate::buttons::Button;
 use crate::config::{ApiConfig, PartyConfig};
 use crate::events::Event;
-use crate::model::{PartyId, UserId, UserMode};
+use crate::model::{UserId, UserMode};
 use crate::random::Random;
 
 pub struct Client {
     audio_player: AudioPlayer,
     random: Random,
     api_client: ApiClient,
+    party_config: PartyConfig,
     event_receiver: Receiver<Event>,
 }
 
@@ -27,35 +28,30 @@ impl Client {
     pub fn new(
         sounds_path: PathBuf,
         api_config: &ApiConfig,
-        party_id: &PartyId,
+        party_config: PartyConfig,
         event_receiver: Receiver<Event>,
     ) -> Result<Self> {
         Ok(Self {
             audio_player: AudioPlayer::new(sounds_path)?,
             random: Random::new(),
-            api_client: ApiClient::new(api_config, party_id.clone()),
+            api_client: ApiClient::new(api_config, party_config.party_id.clone()),
+            party_config,
             event_receiver,
         })
     }
 
-    pub fn run(&self, party_config: &PartyConfig, user_mode: &UserMode) -> Result<()> {
+    pub fn run(&self, user_mode: &UserMode) -> Result<()> {
         self.sign_on()?;
 
         match user_mode {
-            UserMode::SingleUser(user_id) => {
-                self.handle_single_user_events(party_config, user_id)?
-            }
-            UserMode::MultiUser => self.handle_multi_user_events(party_config)?,
+            UserMode::SingleUser(user_id) => self.handle_single_user_events(user_id)?,
+            UserMode::MultiUser => self.handle_multi_user_events()?,
         }
 
         Ok(())
     }
 
-    pub fn handle_single_user_events(
-        &self,
-        party_config: &PartyConfig,
-        user_id: &UserId,
-    ) -> Result<()> {
+    pub fn handle_single_user_events(&self, user_id: &UserId) -> Result<()> {
         for msg in self.event_receiver.iter() {
             match msg {
                 Event::TagRead { .. } => {
@@ -64,11 +60,7 @@ impl Client {
                 Event::ButtonPressed { button } => {
                     log::debug!("Button pressed: {:?}", button);
 
-                    self.handle_button_press_with_identified_user(
-                        user_id.clone(),
-                        button,
-                        party_config,
-                    )?;
+                    self.handle_button_press_with_identified_user(user_id.clone(), button)?;
                 }
                 Event::ShutdownRequested => {
                     self.shutdown()?;
@@ -80,7 +72,7 @@ impl Client {
         Ok(())
     }
 
-    pub fn handle_multi_user_events(&self, party_config: &PartyConfig) -> Result<()> {
+    pub fn handle_multi_user_events(&self) -> Result<()> {
         let mut current_user_id: Option<UserId> = None;
 
         for msg in self.event_receiver.iter() {
@@ -95,11 +87,7 @@ impl Client {
                     // Submit if user has identified; ignore if no user has
                     // been specified.
                     if let Some(user_id) = current_user_id {
-                        self.handle_button_press_with_identified_user(
-                            user_id,
-                            button,
-                            party_config,
-                        )?;
+                        self.handle_button_press_with_identified_user(user_id, button)?;
                         current_user_id = None; // reset
                     }
                 }
@@ -178,9 +166,8 @@ impl Client {
         &self,
         user_id: UserId,
         button: Button,
-        party_config: &PartyConfig,
     ) -> Result<()> {
-        if let Some(whereabouts_name) = &party_config.buttons_to_whereabouts.get(&button) {
+        if let Some(whereabouts_name) = &self.party_config.buttons_to_whereabouts.get(&button) {
             log::debug!("Submitting whereabouts for user {user_id} -> {whereabouts_name} ...");
 
             let response = self.update_status(&user_id, whereabouts_name);
@@ -189,7 +176,7 @@ impl Client {
                     log::debug!("Status successfully updated.");
 
                     if let Some(sound_names) =
-                        &party_config.whereabouts_sounds.get(*whereabouts_name)
+                        &self.party_config.whereabouts_sounds.get(*whereabouts_name)
                     {
                         self.play_random_sound(sound_names)?;
                     }

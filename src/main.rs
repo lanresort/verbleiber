@@ -55,7 +55,6 @@ fn main() -> Result<()> {
 
 fn run(config_filename: PathBuf) -> Result<()> {
     let config = config::load_config(&config_filename)?;
-    let party = &config.party;
 
     let user_mode = config.get_user_mode();
     match &user_mode {
@@ -84,8 +83,8 @@ fn run(config_filename: PathBuf) -> Result<()> {
         tx3,
     )?;
 
-    let client = Client::new(sounds_path, &config.api, &party.party_id, rx)?;
-    client.run(party, &user_mode)?;
+    let client = Client::new(sounds_path, &config.api, config.party, rx)?;
+    client.run(&user_mode)?;
 
     Ok(())
 }
