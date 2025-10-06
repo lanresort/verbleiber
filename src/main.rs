@@ -107,9 +107,7 @@ fn handle_events(
                 }
             }
             Event::ShutdownRequested => {
-                log::info!("Shutdown requested.");
-                client.sign_off()?;
-                log::info!("Shutting down ...");
+                shutdown(&client)?;
                 break;
             }
         }
@@ -122,4 +120,11 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
     sender
         .send(Event::ShutdownRequested)
         .expect("Could not send shutdown signal")
+}
+
+fn shutdown(client: &Client) -> Result<()> {
+    log::info!("Shutdown requested.");
+    client.sign_off()?;
+    log::info!("Shutting down ...");
+    Ok(())
 }
