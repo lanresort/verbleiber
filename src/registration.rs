@@ -3,10 +3,11 @@
  * License: MIT
  */
 
-use anyhow::{Result, anyhow, bail};
-use serde::{Deserialize, Serialize};
 use std::thread::sleep;
 use std::time::Duration;
+
+use anyhow::{Result, anyhow, bail};
+use serde::{Deserialize, Serialize};
 use ureq::{Agent, Error};
 
 use crate::http::build_agent;

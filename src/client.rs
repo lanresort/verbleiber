@@ -3,9 +3,10 @@
  * License: MIT
  */
 
+use std::path::PathBuf;
+
 use anyhow::Result;
 use flume::Receiver;
-use std::path::PathBuf;
 
 use crate::api::ApiClient;
 use crate::audio::AudioPlayer;

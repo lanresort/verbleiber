@@ -3,12 +3,13 @@
  * License: MIT
  */
 
+use std::collections::HashMap;
+use std::thread;
+
 use anyhow::{Context, Result};
 use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
 use serde::Deserialize;
-use std::collections::HashMap;
-use std::thread;
 
 use crate::devices;
 use crate::events::Event;

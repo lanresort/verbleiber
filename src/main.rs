@@ -3,10 +3,11 @@
  * License: MIT
  */
 
+use std::path::PathBuf;
+
 use anyhow::{Result, bail};
 use flume::{Receiver, Sender};
 use simple_logger::SimpleLogger;
-use std::path::PathBuf;
 
 mod api;
 mod audio;

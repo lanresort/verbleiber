@@ -4,6 +4,7 @@
  */
 
 use std::time::Duration;
+
 use ureq::Agent;
 use ureq::tls::TlsConfig;
 

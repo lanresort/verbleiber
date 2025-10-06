@@ -3,10 +3,11 @@
  * License: MIT
  */
 
+use std::thread;
+
 use anyhow::Result;
 use evdev::{Device, EventSummary, EventType, InputEvent, KeyCode};
 use flume::Sender;
-use std::thread;
 
 use crate::devices;
 use crate::events::Event;

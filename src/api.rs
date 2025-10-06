@@ -3,9 +3,10 @@
  * License: MIT
  */
 
+use std::time::Duration;
+
 use anyhow::{Result, anyhow};
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 use ureq::{Agent, Error};
 
 use crate::config::ApiConfig;

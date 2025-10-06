@@ -3,8 +3,9 @@
  * License: MIT
  */
 
-use clap::{Parser, Subcommand};
 use std::path::PathBuf;
+
+use clap::{Parser, Subcommand};
 
 /// Command-line arguments
 #[derive(Parser, Debug)]

@@ -3,12 +3,13 @@
  * License: MIT
  */
 
-use anyhow::Result;
-use anyhow::ensure;
-use rodio::{Decoder, OutputStream, OutputStreamBuilder, Sink};
 use std::fs::File;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
+
+use anyhow::Result;
+use anyhow::ensure;
+use rodio::{Decoder, OutputStream, OutputStreamBuilder, Sink};
 
 pub(crate) struct SoundLibrary {
     path: PathBuf,

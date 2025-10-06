@@ -3,11 +3,12 @@
  * License: MIT
  */
 
-use anyhow::Result;
-use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs::read_to_string;
 use std::path::{Path, PathBuf};
+
+use anyhow::Result;
+use serde::Deserialize;
 
 use crate::buttons::Button;
 use crate::model::{PartyId, UserId, UserMode};
