@@ -20,30 +20,32 @@ pub struct Client {
     audio_player: AudioPlayer,
     random: Random,
     api_client: ApiClient,
+    event_receiver: Receiver<Event>,
 }
 
 impl Client {
-    pub fn new(sounds_path: PathBuf, api_config: &ApiConfig, party_id: &PartyId) -> Result<Self> {
+    pub fn new(
+        sounds_path: PathBuf,
+        api_config: &ApiConfig,
+        party_id: &PartyId,
+        event_receiver: Receiver<Event>,
+    ) -> Result<Self> {
         Ok(Self {
             audio_player: AudioPlayer::new(sounds_path)?,
             random: Random::new(),
             api_client: ApiClient::new(api_config, party_id.clone()),
+            event_receiver,
         })
     }
 
-    pub fn run(
-        &self,
-        event_receiver: Receiver<Event>,
-        party_config: &PartyConfig,
-        user_mode: &UserMode,
-    ) -> Result<()> {
+    pub fn run(&self, party_config: &PartyConfig, user_mode: &UserMode) -> Result<()> {
         self.sign_on()?;
 
         match user_mode {
             UserMode::SingleUser(user_id) => {
-                self.handle_single_user_events(event_receiver, party_config, user_id)?
+                self.handle_single_user_events(party_config, user_id)?
             }
-            UserMode::MultiUser => self.handle_multi_user_events(event_receiver, party_config)?,
+            UserMode::MultiUser => self.handle_multi_user_events(party_config)?,
         }
 
         Ok(())
@@ -51,11 +53,10 @@ impl Client {
 
     pub fn handle_single_user_events(
         &self,
-        event_receiver: Receiver<Event>,
         party_config: &PartyConfig,
         user_id: &UserId,
     ) -> Result<()> {
-        for msg in event_receiver.iter() {
+        for msg in self.event_receiver.iter() {
             match msg {
                 Event::TagRead { .. } => {
                     log::error!("Unexpected tag read event received.");
@@ -79,14 +80,10 @@ impl Client {
         Ok(())
     }
 
-    pub fn handle_multi_user_events(
-        &self,
-        event_receiver: Receiver<Event>,
-        party_config: &PartyConfig,
-    ) -> Result<()> {
+    pub fn handle_multi_user_events(&self, party_config: &PartyConfig) -> Result<()> {
         let mut current_user_id: Option<UserId> = None;
 
-        for msg in event_receiver.iter() {
+        for msg in self.event_receiver.iter() {
             match msg {
                 Event::TagRead { tag } => {
                     log::debug!("Tag read: {tag}");

@@ -84,8 +84,8 @@ fn run(config_filename: PathBuf) -> Result<()> {
         tx3,
     )?;
 
-    let client = Client::new(sounds_path, &config.api, &party.party_id)?;
-    client.run(rx, party, &user_mode)?;
+    let client = Client::new(sounds_path, &config.api, &party.party_id, rx)?;
+    client.run(party, &user_mode)?;
 
     Ok(())
 }
