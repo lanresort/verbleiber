@@ -32,7 +32,7 @@ impl Client {
     }
 
     pub fn run(
-        &mut self,
+        &self,
         event_receiver: Receiver<Event>,
         party_config: &PartyConfig,
         user_mode: &UserMode,
@@ -50,7 +50,7 @@ impl Client {
     }
 
     pub fn handle_single_user_events(
-        &mut self,
+        &self,
         event_receiver: Receiver<Event>,
         party_config: &PartyConfig,
         user_id: &UserId,
@@ -80,7 +80,7 @@ impl Client {
     }
 
     pub fn handle_multi_user_events(
-        &mut self,
+        &self,
         event_receiver: Receiver<Event>,
         party_config: &PartyConfig,
     ) -> Result<()> {
@@ -178,7 +178,7 @@ impl Client {
     }
 
     fn handle_button_press_with_identified_user(
-        &mut self,
+        &self,
         user_id: UserId,
         button: Button,
         party_config: &PartyConfig,
@@ -221,7 +221,7 @@ impl Client {
         self.audio_player.play(name)
     }
 
-    fn play_random_sound(&mut self, names: &[String]) -> Result<()> {
+    fn play_random_sound(&self, names: &[String]) -> Result<()> {
         let name = self.random.choose_random_element(names);
         self.play_sound(&name)
     }
