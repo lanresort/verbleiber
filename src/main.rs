@@ -23,9 +23,8 @@ mod registration;
 mod tagreader;
 
 use crate::client::Client;
-use crate::config::PartyConfig;
 use crate::events::Event;
-use crate::model::{UserId, UserMode};
+use crate::model::UserMode;
 
 fn main() -> Result<()> {
     SimpleLogger::new()
@@ -84,60 +83,11 @@ fn run(config_filename: PathBuf) -> Result<()> {
         tx3,
     )?;
 
-    let client = Client::new(sounds_path, &config.api, &party.party_id)?;
+    let mut client = Client::new(sounds_path, &config.api, &party.party_id)?;
 
     client.sign_on()?;
 
-    handle_events(rx, client, party, &user_mode)?;
-
-    Ok(())
-}
-
-fn handle_events(
-    event_receiver: Receiver<Event>,
-    mut client: Client,
-    party_config: &PartyConfig,
-    user_mode: &UserMode,
-) -> Result<()> {
-    let mut current_user_id: Option<UserId> = None;
-
-    for msg in event_receiver.iter() {
-        match msg {
-            Event::TagRead { tag } => {
-                log::debug!("Tag read: {tag}");
-                current_user_id = client.handle_tag_read(&tag)?;
-            }
-            Event::ButtonPressed { button } => {
-                log::debug!("Button pressed: {:?}", button);
-
-                match user_mode {
-                    UserMode::SingleUser(user_id) => {
-                        client.handle_button_press_with_identified_user(
-                            user_id.clone(),
-                            button,
-                            party_config,
-                        )?;
-                    }
-                    UserMode::MultiUser => {
-                        // Submit if user has identified; ignore if no user has
-                        // been specified.
-                        if let Some(user_id) = current_user_id {
-                            client.handle_button_press_with_identified_user(
-                                user_id,
-                                button,
-                                party_config,
-                            )?;
-                            current_user_id = None; // reset
-                        }
-                    }
-                }
-            }
-            Event::ShutdownRequested => {
-                shutdown(&client)?;
-                break;
-            }
-        }
-    }
+    client.handle_events(rx, party, &user_mode)?;
 
     Ok(())
 }
@@ -146,11 +96,4 @@ fn handle_ctrl_c(sender: &Sender<Event>) {
     sender
         .send(Event::ShutdownRequested)
         .expect("Could not send shutdown signal")
-}
-
-fn shutdown(client: &Client) -> Result<()> {
-    log::info!("Shutdown requested.");
-    client.sign_off()?;
-    log::info!("Shutting down ...");
-    Ok(())
 }

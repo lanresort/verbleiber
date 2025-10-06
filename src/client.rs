@@ -4,13 +4,15 @@
  */
 
 use anyhow::Result;
+use flume::Receiver;
 use std::path::PathBuf;
 
 use crate::api::ApiClient;
 use crate::audio::AudioPlayer;
 use crate::buttons::Button;
 use crate::config::{ApiConfig, PartyConfig};
-use crate::model::{PartyId, UserId};
+use crate::events::Event;
+use crate::model::{PartyId, UserId, UserMode};
 use crate::random::Random;
 
 pub struct Client {
@@ -26,6 +28,55 @@ impl Client {
             random: Random::new(),
             api_client: ApiClient::new(api_config, party_id.clone()),
         })
+    }
+
+    pub fn handle_events(
+        &mut self,
+        event_receiver: Receiver<Event>,
+        party_config: &PartyConfig,
+        user_mode: &UserMode,
+    ) -> Result<()> {
+        let mut current_user_id: Option<UserId> = None;
+
+        for msg in event_receiver.iter() {
+            match msg {
+                Event::TagRead { tag } => {
+                    log::debug!("Tag read: {tag}");
+                    current_user_id = self.handle_tag_read(&tag)?;
+                }
+                Event::ButtonPressed { button } => {
+                    log::debug!("Button pressed: {:?}", button);
+
+                    match user_mode {
+                        UserMode::SingleUser(user_id) => {
+                            self.handle_button_press_with_identified_user(
+                                user_id.clone(),
+                                button,
+                                party_config,
+                            )?;
+                        }
+                        UserMode::MultiUser => {
+                            // Submit if user has identified; ignore if no user has
+                            // been specified.
+                            if let Some(user_id) = current_user_id {
+                                self.handle_button_press_with_identified_user(
+                                    user_id,
+                                    button,
+                                    party_config,
+                                )?;
+                                current_user_id = None; // reset
+                            }
+                        }
+                    }
+                }
+                Event::ShutdownRequested => {
+                    self.shutdown()?;
+                    break;
+                }
+            }
+        }
+
+        Ok(())
     }
 
     pub fn sign_on(&self) -> Result<()> {
@@ -52,7 +103,7 @@ impl Client {
         Ok(())
     }
 
-    pub fn handle_tag_read(&self, tag: &str) -> Result<Option<UserId>> {
+    fn handle_tag_read(&self, tag: &str) -> Result<Option<UserId>> {
         log::debug!("Requesting details for tag {} ...", tag);
         match self.api_client.get_tag_details(tag) {
             Ok(details) => match details {
@@ -89,7 +140,7 @@ impl Client {
         }
     }
 
-    pub fn handle_button_press_with_identified_user(
+    fn handle_button_press_with_identified_user(
         &mut self,
         user_id: UserId,
         button: Button,
@@ -115,6 +166,13 @@ impl Client {
                 }
             }
         }
+        Ok(())
+    }
+
+    fn shutdown(&self) -> Result<()> {
+        log::info!("Shutdown requested.");
+        self.sign_off()?;
+        log::info!("Shutting down ...");
         Ok(())
     }
 
