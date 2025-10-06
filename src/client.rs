@@ -20,11 +20,11 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(sounds_path: PathBuf, api_config: &ApiConfig, party_id: PartyId) -> Result<Self> {
+    pub fn new(sounds_path: PathBuf, api_config: &ApiConfig, party_id: &PartyId) -> Result<Self> {
         Ok(Self {
             audio_player: AudioPlayer::new(sounds_path)?,
             random: Random::new(),
-            api_client: ApiClient::new(api_config, party_id),
+            api_client: ApiClient::new(api_config, party_id.clone()),
         })
     }
 

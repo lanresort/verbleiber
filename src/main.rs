@@ -83,7 +83,7 @@ fn run(config_filename: PathBuf) -> Result<()> {
         tx3,
     )?;
 
-    let client = Client::new(sounds_path, &config.api, config.party.party_id.clone())?;
+    let client = Client::new(sounds_path, &config.api, &config.party.party_id)?;
 
     client.sign_on()?;
 
