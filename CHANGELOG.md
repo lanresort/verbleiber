@@ -3,6 +3,8 @@
 
 ## 0.8.0 (unreleased)
 
+- Introduced single-user mode. Works without tag reader.
+
 
 ## 0.7.0 (2025-09-03)
 

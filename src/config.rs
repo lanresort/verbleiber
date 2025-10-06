@@ -10,11 +10,11 @@ use std::fs::read_to_string;
 use std::path::{Path, PathBuf};
 
 use crate::buttons::Button;
-use crate::model::PartyId;
+use crate::model::{PartyId, UserId, UserMode};
 
 #[derive(Deserialize)]
 pub(crate) struct Config {
-    pub reader_input_device: String,
+    pub reader_input_device: Option<String>,
     pub button_input_device: String,
 
     #[serde(rename = "buttons_to_key_codes")]
@@ -23,6 +23,16 @@ pub(crate) struct Config {
     pub sounds_path: PathBuf,
     pub api: ApiConfig,
     pub party: PartyConfig,
+    pub user: Option<UserConfig>,
+}
+
+impl Config {
+    pub fn get_user_mode(&self) -> UserMode {
+        self.user
+            .as_ref()
+            .and_then(|x| x.id.clone())
+            .map_or(UserMode::MultiUser, UserMode::SingleUser)
+    }
 }
 
 #[derive(Deserialize)]
@@ -38,6 +48,11 @@ pub(crate) struct PartyConfig {
     pub party_id: PartyId,
     pub buttons_to_whereabouts: HashMap<Button, String>,
     pub whereabouts_sounds: HashMap<String, Vec<String>>,
+}
+
+#[derive(Deserialize)]
+pub(crate) struct UserConfig {
+    pub id: Option<UserId>,
 }
 
 pub(crate) fn load_config(path: &Path) -> Result<Config> {

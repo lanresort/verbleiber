@@ -6,3 +6,8 @@
 pub(crate) type PartyId = String;
 
 pub(crate) type UserId = String;
+
+pub(crate) enum UserMode {
+    SingleUser(UserId),
+    MultiUser,
+}

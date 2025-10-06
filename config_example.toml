@@ -42,3 +42,7 @@ button4 = "mystery-zone"
 "mystery-zone" = [
     "willkommen-in-der-mystery-zone",
 ]
+
+# Uncomment and provide user ID to enable single-user mode.
+#[user]
+#id = "00000000-0000-0000-0000-000000000000"
