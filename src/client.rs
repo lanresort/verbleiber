@@ -37,15 +37,51 @@ impl Client {
         user_mode: &UserMode,
     ) -> Result<()> {
         self.sign_on()?;
-        self.handle_events(event_receiver, party_config, user_mode)?;
+
+        match user_mode {
+            UserMode::SingleUser(user_id) => {
+                self.handle_single_user_events(event_receiver, party_config, user_id)?
+            }
+            UserMode::MultiUser => self.handle_multi_user_events(event_receiver, party_config)?,
+        }
+
         Ok(())
     }
 
-    pub fn handle_events(
+    pub fn handle_single_user_events(
         &mut self,
         event_receiver: Receiver<Event>,
         party_config: &PartyConfig,
-        user_mode: &UserMode,
+        user_id: &UserId,
+    ) -> Result<()> {
+        for msg in event_receiver.iter() {
+            match msg {
+                Event::TagRead { .. } => {
+                    log::error!("Unexpected tag read event received.");
+                }
+                Event::ButtonPressed { button } => {
+                    log::debug!("Button pressed: {:?}", button);
+
+                    self.handle_button_press_with_identified_user(
+                        user_id.clone(),
+                        button,
+                        party_config,
+                    )?;
+                }
+                Event::ShutdownRequested => {
+                    self.shutdown()?;
+                    break;
+                }
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn handle_multi_user_events(
+        &mut self,
+        event_receiver: Receiver<Event>,
+        party_config: &PartyConfig,
     ) -> Result<()> {
         let mut current_user_id: Option<UserId> = None;
 
@@ -58,26 +94,15 @@ impl Client {
                 Event::ButtonPressed { button } => {
                     log::debug!("Button pressed: {:?}", button);
 
-                    match user_mode {
-                        UserMode::SingleUser(user_id) => {
-                            self.handle_button_press_with_identified_user(
-                                user_id.clone(),
-                                button,
-                                party_config,
-                            )?;
-                        }
-                        UserMode::MultiUser => {
-                            // Submit if user has identified; ignore if no user has
-                            // been specified.
-                            if let Some(user_id) = current_user_id {
-                                self.handle_button_press_with_identified_user(
-                                    user_id,
-                                    button,
-                                    party_config,
-                                )?;
-                                current_user_id = None; // reset
-                            }
-                        }
+                    // Submit if user has identified; ignore if no user has
+                    // been specified.
+                    if let Some(user_id) = current_user_id {
+                        self.handle_button_press_with_identified_user(
+                            user_id,
+                            button,
+                            party_config,
+                        )?;
+                        current_user_id = None; // reset
                     }
                 }
                 Event::ShutdownRequested => {
