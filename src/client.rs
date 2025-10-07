@@ -40,17 +40,6 @@ impl Client {
         })
     }
 
-    fn run(&self, user_mode: &UserMode) -> Result<()> {
-        self.sign_on()?;
-
-        match user_mode {
-            UserMode::SingleUser(user_id) => self.handle_single_user_events(user_id)?,
-            UserMode::MultiUser => self.handle_multi_user_events()?,
-        }
-
-        Ok(())
-    }
-
     fn handle_single_user_events(&self, user_id: &UserId) -> Result<()> {
         for msg in self.event_receiver.iter() {
             match msg {
@@ -222,8 +211,9 @@ impl SingleUserClient {
     }
 
     fn run(&self) -> Result<()> {
-        self.client
-            .run(&UserMode::SingleUser(self.user_id.clone()))?;
+        self.client.sign_on()?;
+
+        self.client.handle_single_user_events(&self.user_id)?;
 
         Ok(())
     }
@@ -239,7 +229,9 @@ impl MultiUserClient {
     }
 
     fn run(&self) -> Result<()> {
-        self.client.run(&UserMode::MultiUser)?;
+        self.client.sign_on()?;
+
+        self.client.handle_multi_user_events()?;
 
         Ok(())
     }
