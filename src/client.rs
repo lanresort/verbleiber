@@ -40,56 +40,6 @@ impl Client {
         })
     }
 
-    fn handle_single_user_events(&self, user_id: &UserId) -> Result<()> {
-        for msg in self.event_receiver.iter() {
-            match msg {
-                Event::TagRead { .. } => {
-                    log::error!("Unexpected tag read event received.");
-                }
-                Event::ButtonPressed { button } => {
-                    log::debug!("Button pressed: {:?}", button);
-
-                    self.handle_button_press_with_identified_user(user_id.clone(), button)?;
-                }
-                Event::ShutdownRequested => {
-                    self.shutdown()?;
-                    break;
-                }
-            }
-        }
-
-        Ok(())
-    }
-
-    fn handle_multi_user_events(&self) -> Result<()> {
-        let mut current_user_id: Option<UserId> = None;
-
-        for msg in self.event_receiver.iter() {
-            match msg {
-                Event::TagRead { tag } => {
-                    log::debug!("Tag read: {tag}");
-                    current_user_id = self.handle_tag_read(&tag)?;
-                }
-                Event::ButtonPressed { button } => {
-                    log::debug!("Button pressed: {:?}", button);
-
-                    // Submit if user has identified; ignore if no user has
-                    // been specified.
-                    if let Some(user_id) = current_user_id {
-                        self.handle_button_press_with_identified_user(user_id, button)?;
-                        current_user_id = None; // reset
-                    }
-                }
-                Event::ShutdownRequested => {
-                    self.shutdown()?;
-                    break;
-                }
-            }
-        }
-
-        Ok(())
-    }
-
     fn sign_on(&self) -> Result<()> {
         log::info!("Signing on ...");
         match self.api_client.sign_on() {
@@ -213,7 +163,29 @@ impl SingleUserClient {
     fn run(&self) -> Result<()> {
         self.client.sign_on()?;
 
-        self.client.handle_single_user_events(&self.user_id)?;
+        self.handle_events(&self.user_id)?;
+
+        Ok(())
+    }
+
+    fn handle_events(&self, user_id: &UserId) -> Result<()> {
+        for msg in self.client.event_receiver.iter() {
+            match msg {
+                Event::TagRead { .. } => {
+                    log::error!("Unexpected tag read event received.");
+                }
+                Event::ButtonPressed { button } => {
+                    log::debug!("Button pressed: {:?}", button);
+
+                    self.client
+                        .handle_button_press_with_identified_user(user_id.clone(), button)?;
+                }
+                Event::ShutdownRequested => {
+                    self.client.shutdown()?;
+                    break;
+                }
+            }
+        }
 
         Ok(())
     }
@@ -231,7 +203,37 @@ impl MultiUserClient {
     fn run(&self) -> Result<()> {
         self.client.sign_on()?;
 
-        self.client.handle_multi_user_events()?;
+        self.handle_events()?;
+
+        Ok(())
+    }
+
+    fn handle_events(&self) -> Result<()> {
+        let mut current_user_id: Option<UserId> = None;
+
+        for msg in self.client.event_receiver.iter() {
+            match msg {
+                Event::TagRead { tag } => {
+                    log::debug!("Tag read: {tag}");
+                    current_user_id = self.client.handle_tag_read(&tag)?;
+                }
+                Event::ButtonPressed { button } => {
+                    log::debug!("Button pressed: {:?}", button);
+
+                    // Submit if user has identified; ignore if no user has
+                    // been specified.
+                    if let Some(user_id) = current_user_id {
+                        self.client
+                            .handle_button_press_with_identified_user(user_id, button)?;
+                        current_user_id = None; // reset
+                    }
+                }
+                Event::ShutdownRequested => {
+                    self.client.shutdown()?;
+                    break;
+                }
+            }
+        }
 
         Ok(())
     }
