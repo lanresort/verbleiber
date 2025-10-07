@@ -103,13 +103,13 @@ impl Client {
 
     fn handle_button_press_with_identified_user(
         &self,
-        user_id: UserId,
+        user_id: &UserId,
         button: Button,
     ) -> Result<()> {
         if let Some(whereabouts_name) = &self.party_config.buttons_to_whereabouts.get(&button) {
             log::debug!("Submitting whereabouts for user {user_id} -> {whereabouts_name} ...");
 
-            let response = self.update_status(&user_id, whereabouts_name);
+            let response = self.update_status(user_id, whereabouts_name);
             match response {
                 Ok(_) => {
                     log::debug!("Status successfully updated.");
@@ -178,7 +178,7 @@ impl SingleUserClient {
                     log::debug!("Button pressed: {:?}", button);
 
                     self.client
-                        .handle_button_press_with_identified_user(user_id.clone(), button)?;
+                        .handle_button_press_with_identified_user(user_id, button)?;
                 }
                 Event::ShutdownRequested => {
                     self.client.shutdown()?;
@@ -224,7 +224,7 @@ impl MultiUserClient {
                     // been specified.
                     if let Some(user_id) = current_user_id {
                         self.client
-                            .handle_button_press_with_identified_user(user_id, button)?;
+                            .handle_button_press_with_identified_user(&user_id, button)?;
                         current_user_id = None; // reset
                     }
                 }
