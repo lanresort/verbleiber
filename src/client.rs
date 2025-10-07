@@ -16,7 +16,7 @@ use crate::events::Event;
 use crate::model::{UserId, UserMode};
 use crate::random::Random;
 
-pub struct Client {
+struct Client {
     audio_player: AudioPlayer,
     random: Random,
     api_client: ApiClient,
@@ -25,7 +25,7 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(
+    fn new(
         sounds_path: PathBuf,
         api_config: &ApiConfig,
         party_config: PartyConfig,
@@ -40,7 +40,7 @@ impl Client {
         })
     }
 
-    pub fn run(&self, user_mode: &UserMode) -> Result<()> {
+    fn run(&self, user_mode: &UserMode) -> Result<()> {
         self.sign_on()?;
 
         match user_mode {
@@ -51,7 +51,7 @@ impl Client {
         Ok(())
     }
 
-    pub fn handle_single_user_events(&self, user_id: &UserId) -> Result<()> {
+    fn handle_single_user_events(&self, user_id: &UserId) -> Result<()> {
         for msg in self.event_receiver.iter() {
             match msg {
                 Event::TagRead { .. } => {
@@ -72,7 +72,7 @@ impl Client {
         Ok(())
     }
 
-    pub fn handle_multi_user_events(&self) -> Result<()> {
+    fn handle_multi_user_events(&self) -> Result<()> {
         let mut current_user_id: Option<UserId> = None;
 
         for msg in self.event_receiver.iter() {
@@ -101,7 +101,7 @@ impl Client {
         Ok(())
     }
 
-    pub fn sign_on(&self) -> Result<()> {
+    fn sign_on(&self) -> Result<()> {
         log::info!("Signing on ...");
         match self.api_client.sign_on() {
             Ok(()) => log::info!("Signed on."),
@@ -113,7 +113,7 @@ impl Client {
         Ok(())
     }
 
-    pub fn sign_off(&self) -> Result<()> {
+    fn sign_off(&self) -> Result<()> {
         log::info!("Signing off ...");
         match self.api_client.sign_off() {
             Ok(()) => log::info!("Signed off."),
@@ -209,4 +209,15 @@ impl Client {
         let name = self.random.choose_random_element(names);
         self.play_sound(&name)
     }
+}
+
+pub fn run_client(
+    sounds_path: PathBuf,
+    api_config: &ApiConfig,
+    party_config: PartyConfig,
+    event_receiver: Receiver<Event>,
+    user_mode: &UserMode,
+) -> Result<()> {
+    let client = Client::new(sounds_path, api_config, party_config, event_receiver)?;
+    client.run(user_mode)
 }

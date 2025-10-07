@@ -23,7 +23,7 @@ mod random;
 mod registration;
 mod tagreader;
 
-use crate::client::Client;
+use crate::client::run_client;
 use crate::events::Event;
 use crate::model::UserMode;
 
@@ -83,8 +83,7 @@ fn run(config_filename: PathBuf) -> Result<()> {
         tx3,
     )?;
 
-    let client = Client::new(sounds_path, &config.api, config.party, rx)?;
-    client.run(&user_mode)?;
+    run_client(sounds_path, &config.api, config.party, rx, &user_mode)?;
 
     Ok(())
 }
