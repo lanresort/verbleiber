@@ -211,6 +211,40 @@ impl Client {
     }
 }
 
+struct SingleUserClient {
+    client: Client,
+    user_id: UserId,
+}
+
+impl SingleUserClient {
+    fn new(client: Client, user_id: UserId) -> Result<Self> {
+        Ok(Self { client, user_id })
+    }
+
+    fn run(&self) -> Result<()> {
+        self.client
+            .run(&UserMode::SingleUser(self.user_id.clone()))?;
+
+        Ok(())
+    }
+}
+
+struct MultiUserClient {
+    client: Client,
+}
+
+impl MultiUserClient {
+    fn new(client: Client) -> Result<Self> {
+        Ok(Self { client })
+    }
+
+    fn run(&self) -> Result<()> {
+        self.client.run(&UserMode::MultiUser)?;
+
+        Ok(())
+    }
+}
+
 pub fn run_client(
     sounds_path: PathBuf,
     api_config: &ApiConfig,
@@ -219,5 +253,9 @@ pub fn run_client(
     user_mode: &UserMode,
 ) -> Result<()> {
     let client = Client::new(sounds_path, api_config, party_config, event_receiver)?;
-    client.run(user_mode)
+
+    match user_mode {
+        UserMode::SingleUser(user_id) => SingleUserClient::new(client, user_id.clone())?.run(),
+        UserMode::MultiUser => MultiUserClient::new(client)?.run(),
+    }
 }
