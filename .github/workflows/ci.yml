@@ -1,4 +1,4 @@
-name: Rust
+name: Continuous Integration
 
 on:
   push:
@@ -13,11 +13,9 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-and-test:
     name: Build and test
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -26,8 +24,11 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get --update install --assume-yes --no-install-recommends libasound2-dev
 
+      - name: Show rustc version
+        run: rustc --version
+
       - name: Build
-        run: rustc --version && cargo build --verbose
+        run: cargo build --verbose
 
       - name: Test
         run: cargo test --verbose
