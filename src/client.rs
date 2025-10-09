@@ -46,7 +46,7 @@ impl Client {
             Ok(()) => log::info!("Signed on."),
             Err(e) => {
                 log::warn!("Signing on failed.\n{e}");
-                self.play_sound("oh-nein-netzwerkfehler")?;
+                self.play_sound("signon_failed")?;
             }
         }
         Ok(())
@@ -58,7 +58,7 @@ impl Client {
             Ok(()) => log::info!("Signed off."),
             Err(e) => {
                 log::warn!("Signing off failed.\n{e}");
-                self.play_sound("oh-nein-netzwerkfehler")?;
+                self.play_sound("signoff_failed")?;
             }
         }
         Ok(())
@@ -94,7 +94,7 @@ impl Client {
             },
             Err(e) => {
                 log::warn!("Requesting tag details failed.\n{e}");
-                self.play_sound("oh-nein-netzwerkfehler")?;
+                self.play_sound("communication_failed")?;
 
                 Ok(None)
             }
@@ -122,7 +122,7 @@ impl Client {
                 }
                 Err(e) => {
                     log::warn!("Status update failed.\n{e}");
-                    self.play_sound("oh-nein-netzwerkfehler")?;
+                    self.play_sound("communication_failed")?;
                 }
             }
         }

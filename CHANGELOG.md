@@ -5,6 +5,8 @@
 
 - Introduced single-user mode. Works without tag reader.
 
+- Introduced separate, English sound names for communication errors.
+
 
 ## 0.7.0 (2025-09-03)
 
