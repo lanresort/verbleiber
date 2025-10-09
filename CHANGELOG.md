@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 0.9.0 (unreleased)
+
+
 ## 0.8.1 (2025-10-09)
 
 - Fixed reference in release workflow on GitHub Actions.
