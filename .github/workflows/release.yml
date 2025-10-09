@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "[0-9+]\.[0-9+]\.[0-9+](-.+)"
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+
+  create-github-release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version from tag
+        run: echo "VERSION=${{ github.ref_name }}" >> "$GITHUB_ENV"
+
+      - name: Show version
+        run: echo "Version: $VERSION"
+
+      - name: Check that tag matches version in `Cargo.toml`
+        shell: bash
+        run: |
+          if ! grep -q "version = \"$VERSION\"" Cargo.toml; then
+            echo "Tag does not match version in Cargo.toml" >&2
+            exit 1
+          fi
+
+      - name: Draft GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create $VERSION --draft --verify-tag --title $VERSION
+    outputs:
+      version: ${{ env.VERSION }}
+
+  build-release:
+    name: Build release binary
+    needs: create-github-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install system dependencies
+        run: sudo apt-get --update install --assume-yes --no-install-recommends libasound2-dev
+
+      - name: Show rustc version
+        run: rustc --version
+
+      - name: Build release binary
+        run: cargo build --release --verbose
+
+      - name: Assemble archive basename
+        run: echo "ARCHIVE=verbleiber-${{ needs.create-release.outputs.version }}" >> "$GITHUB_ENV"
+
+      - name: Create archive
+        shell: bash
+        run: |
+          mkdir "$ARCHIVE"
+          cp target/release/verbleiber "$ARCHIVE"/
+          cp {CHANGELOG.md,LICENSE,README.md} "$ARCHIVE"/
+          tar czf "$ARCHIVE.tar.gz" "$ARCHIVE"
+          shasum --algorithm 256 "$ARCHIVE.tar.gz" > "$ARCHIVE.tar.gz.sha256"
+          echo "ASSET=$ARCHIVE.tar.gz" >> "$GITHUB_ENV"
+          echo "ASSET_CHECKSUM=$ARCHIVE.tar.gz.sha256" >> "$GITHUB_ENV"
+
+      - name: Upload archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ needs.create-release.outputs.version }}" ${{ env.ASSET }} ${{ env.ASSET_CHECKSUM }}
