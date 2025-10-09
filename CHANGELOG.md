@@ -1,7 +1,7 @@
 # Changelog
 
 
-## 0.8.0 (unreleased)
+## 0.8.0 (2025-10-09)
 
 - Introduced single-user mode. Works without tag reader.
 
