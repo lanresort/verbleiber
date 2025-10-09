@@ -43,7 +43,10 @@ impl Client {
     fn sign_on(&self) -> Result<()> {
         log::info!("Signing on ...");
         match self.api_client.sign_on() {
-            Ok(()) => log::info!("Signed on."),
+            Ok(()) => {
+                log::info!("Signed on.");
+                self.play_sound("signon_successful")?;
+            }
             Err(e) => {
                 log::warn!("Signing on failed.\n{e}");
                 self.play_sound("signon_failed")?;
@@ -55,7 +58,10 @@ impl Client {
     fn sign_off(&self) -> Result<()> {
         log::info!("Signing off ...");
         match self.api_client.sign_off() {
-            Ok(()) => log::info!("Signed off."),
+            Ok(()) => {
+                log::info!("Signed off.");
+                self.play_sound("signoff_successful")?;
+            }
             Err(e) => {
                 log::warn!("Signing off failed.\n{e}");
                 self.play_sound("signoff_failed")?;

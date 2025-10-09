@@ -7,6 +7,8 @@
 
 - Introduced separate, English sound names for communication errors.
 
+- Added sound triggers for successful client sign-on and sign-off.
+
 
 ## 0.7.0 (2025-09-03)
 
