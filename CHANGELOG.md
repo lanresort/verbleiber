@@ -3,6 +3,8 @@
 
 ## 0.8.1 (unreleased)
 
+- Fixed reference in release workflow on GitHub Actions.
+
 
 ## 0.8.0 (2025-10-09)
 
