@@ -20,7 +20,7 @@ jobs:
         run: echo "VERSION=${{ github.ref_name }}" >> "$GITHUB_ENV"
 
       - name: Show version
-        run: echo "Version: $VERSION"
+        run: echo $VERSION
 
       - name: Check that tag matches version in `Cargo.toml`
         shell: bash
