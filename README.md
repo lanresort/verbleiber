@@ -82,6 +82,13 @@ supports MP3, FLAC, WAV, MP4 and AAC, but those have to be enabled as
 features in `Cargo.toml` and require recompilation of the program.
 
 
+## History
+
+Verbleiber has been originally built for and introduced on
+[LANresort](https://www.lanresort.de/) 2022. It has since been used on
+subsequent events as well as on [NorthCon](https://www.northcon.de/).
+
+
 ## License
 
 Verbleiber is licensed under the MIT license.
