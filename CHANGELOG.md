@@ -9,6 +9,9 @@
 
 - Added sound triggers for successful client sign-on and sign-off.
 
+- Changed behavior when trying to play a missing sound file from
+  aborting the program to logging a warning.
+
 
 ## 0.7.0 (2025-09-03)
 

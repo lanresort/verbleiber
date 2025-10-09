@@ -45,11 +45,11 @@ impl Client {
         match self.api_client.sign_on() {
             Ok(()) => {
                 log::info!("Signed on.");
-                self.play_sound("signon_successful")?;
+                self.play_sound("signon_successful");
             }
             Err(e) => {
                 log::warn!("Signing on failed.\n{e}");
-                self.play_sound("signon_failed")?;
+                self.play_sound("signon_failed");
             }
         }
         Ok(())
@@ -60,11 +60,11 @@ impl Client {
         match self.api_client.sign_off() {
             Ok(()) => {
                 log::info!("Signed off.");
-                self.play_sound("signoff_successful")?;
+                self.play_sound("signoff_successful");
             }
             Err(e) => {
                 log::warn!("Signing off failed.\n{e}");
-                self.play_sound("signoff_failed")?;
+                self.play_sound("signoff_failed");
             }
         }
         Ok(())
@@ -84,7 +84,7 @@ impl Client {
                     let user_id = details.user.id;
 
                     if let Some(name) = details.sound_name {
-                        self.play_sound(&name)?;
+                        self.play_sound(&name);
                     }
 
                     log::debug!("Awaiting whereabouts for user {user_id} ...");
@@ -93,14 +93,14 @@ impl Client {
                 }
                 None => {
                     log::info!("Unknown user tag: {tag}");
-                    self.play_sound("unknown_user_tag")?;
+                    self.play_sound("unknown_user_tag");
 
                     Ok(None)
                 }
             },
             Err(e) => {
                 log::warn!("Requesting tag details failed.\n{e}");
-                self.play_sound("communication_failed")?;
+                self.play_sound("communication_failed");
 
                 Ok(None)
             }
@@ -123,12 +123,12 @@ impl Client {
                     if let Some(sound_names) =
                         &self.party_config.whereabouts_sounds.get(*whereabouts_name)
                     {
-                        self.play_random_sound(sound_names)?;
+                        self.play_random_sound(sound_names);
                     }
                 }
                 Err(e) => {
                     log::warn!("Status update failed.\n{e}");
-                    self.play_sound("communication_failed")?;
+                    self.play_sound("communication_failed");
                 }
             }
         }
@@ -146,11 +146,13 @@ impl Client {
         self.api_client.update_status(user_id, whereabouts_name)
     }
 
-    fn play_sound(&self, name: &str) -> Result<()> {
-        self.audio_player.play(name)
+    fn play_sound(&self, name: &str) {
+        if let Err(e) = self.audio_player.play(name) {
+            log::warn!("Could not play sound: {e}");
+        }
     }
 
-    fn play_random_sound(&self, names: &[String]) -> Result<()> {
+    fn play_random_sound(&self, names: &[String]) {
         let name = self.random.choose_random_element(names);
         self.play_sound(&name)
     }
