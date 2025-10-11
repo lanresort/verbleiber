@@ -96,6 +96,7 @@ impl ButtonHandler {
 
 fn find_key_code_by_name(name: &str) -> Option<KeyCode> {
     match name {
+        // joystick
         "trigger" => Some(KeyCode::BTN_TRIGGER),
         "thumb" => Some(KeyCode::BTN_THUMB),
         "thumb2" => Some(KeyCode::BTN_THUMB2),
@@ -110,6 +111,7 @@ fn find_key_code_by_name(name: &str) -> Option<KeyCode> {
         "base6" => Some(KeyCode::BTN_BASE6),
         "dead" => Some(KeyCode::BTN_DEAD),
 
+        // gamepad
         "south" => Some(KeyCode::BTN_SOUTH),
         "a" => Some(KeyCode::BTN_SOUTH),
         "east" => Some(KeyCode::BTN_EAST),
@@ -130,6 +132,7 @@ fn find_key_code_by_name(name: &str) -> Option<KeyCode> {
         "thumbl" => Some(KeyCode::BTN_THUMBL),
         "thumbr" => Some(KeyCode::BTN_THUMBR),
 
+        // directional pad
         "dpad_up" => Some(KeyCode::BTN_DPAD_UP),
         "dpad_down" => Some(KeyCode::BTN_DPAD_DOWN),
         "dpad_left" => Some(KeyCode::BTN_DPAD_LEFT),
