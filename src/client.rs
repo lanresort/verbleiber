@@ -120,12 +120,12 @@ impl Client {
                 Ok(_) => {
                     log::debug!("Status successfully updated.");
 
-                    if let Some(sound_names) =
-                        &self.party_config.whereabouts_sounds.get(*whereabouts_name)
-                    {
-                        let sound_name = self.random.choose_random_element(sound_names);
-                        self.play_sound(&sound_name);
-                    }
+                    let sound_name =
+                        match &self.party_config.whereabouts_sounds.get(*whereabouts_name) {
+                            Some(sound_names) => &self.random.choose_random_element(sound_names),
+                            None => "status_changed",
+                        };
+                    self.play_sound(sound_name);
                 }
                 Err(e) => {
                     log::warn!("Status update failed.\n{e}");
