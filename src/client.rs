@@ -123,7 +123,8 @@ impl Client {
                     if let Some(sound_names) =
                         &self.party_config.whereabouts_sounds.get(*whereabouts_name)
                     {
-                        self.play_random_sound(sound_names);
+                        let sound_name = self.random.choose_random_element(sound_names);
+                        self.play_sound(&sound_name);
                     }
                 }
                 Err(e) => {
@@ -150,11 +151,6 @@ impl Client {
         if let Err(e) = self.audio_player.play(name) {
             log::warn!("Could not play sound: {e}");
         }
-    }
-
-    fn play_random_sound(&self, names: &[String]) {
-        let name = self.random.choose_random_element(names);
-        self.play_sound(&name)
     }
 }
 
