@@ -96,6 +96,16 @@ impl ButtonHandler {
 
 fn find_key_code_by_name(name: &str) -> Option<KeyCode> {
     match name {
+        // mouse
+        "left" => Some(KeyCode::BTN_LEFT),
+        "right" => Some(KeyCode::BTN_RIGHT),
+        "middle" => Some(KeyCode::BTN_MIDDLE),
+        "side" => Some(KeyCode::BTN_SIDE),
+        "extra" => Some(KeyCode::BTN_EXTRA),
+        "forward" => Some(KeyCode::BTN_FORWARD),
+        "back" => Some(KeyCode::BTN_BACK),
+        "task" => Some(KeyCode::BTN_TASK),
+
         // joystick
         "trigger" => Some(KeyCode::BTN_TRIGGER),
         "thumb" => Some(KeyCode::BTN_THUMB),

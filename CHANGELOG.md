@@ -3,6 +3,8 @@
 
 ## 0.9.0 (unreleased)
 
+- Added support for mouse buttons.
+
 
 ## 0.8.1 (2025-10-09)
 
