@@ -5,8 +5,8 @@
 
 - Added support for mouse buttons.
 
-- Added fallback to play default sound when no specific sounds are
-  configured for a whereabouts name.
+- Added fallback to play default sound when no specific sounds are configured
+  for a whereabouts name.
 
 
 ## 0.8.1 (2025-10-09)
@@ -22,23 +22,22 @@
 
 - Added sound triggers for successful client sign-on and sign-off.
 
-- Changed behavior when trying to play a missing sound file from
-  aborting the program to logging a warning.
+- Changed behavior when trying to play a missing sound file from aborting the
+  program to logging a warning.
 
 
 ## 0.7.0 (2025-09-03)
 
-- Introduced subcommands. To run the application as usual, use
-  `verbleiber run` instead of just `verbleiber`.
+- Introduced subcommands. To run the application as usual, use `verbleiber run`
+  instead of just `verbleiber`.
 
 - Added subcommand `register` to register a new client with the API.
 
-- Made button mapping configurable. Added new section
-  `buttons_to_key_codes` to the configuration file format.
+- Made button mapping configurable. Added new section `buttons_to_key_codes` to
+  the configuration file format.
 
-- Changed `Bearer` authorization header value from API token to client
-  token for sign-on, sign-off, tag retrieval, and status update
-  endpoints.
+- Changed `Bearer` authorization header value from API token to client token
+  for sign-on, sign-off, tag retrieval, and status update endpoints.
 
 - Removed now unused API token from code and configuration.
 
@@ -46,11 +45,11 @@
 
 - Added client sign-off on application shutdown.
 
-- Adjusted to new whereabouts API response for tags which now includes
-  the sound name without file extension.
+- Adjusted to new whereabouts API response for tags which now includes the
+  sound name without file extension.
 
-- Remove file extension from both hard-coded and configured sound names.
-  It will be added by the audio player.
+- Remove file extension from both hard-coded and configured sound names. It
+  will be added by the audio player.
 
 - Fixed outdated property name in exemplary configuration file.
 
@@ -74,18 +73,17 @@
 
 ## 0.6.0 (2025-05-02)
 
-- Renamed configuration property `auth_token` to `api_token` in section
-  `api`.
+- Renamed configuration property `auth_token` to `api_token` in section `api`.
 
 - Added configuration property `client_token` in section `api`.
 
-- Added header `x-whereabouts-client-token` to status update requests to
-  comply with the client-aware whereabouts API.
+- Added header `x-whereabouts-client-token` to status update requests to comply
+  with the client-aware whereabouts API.
 
 - Added client sign-on on application start.
 
-- Allowed disabling of TLS verification (useful for self-signed
-  certificates during development).
+- Allowed disabling of TLS verification (useful for self-signed certificates
+  during development).
 
 - Raised minimum supported Rust version to 1.85.0.
 
@@ -111,8 +109,8 @@
 - Moved key `party_id` and tables `buttons_to_whereabouts` and
   `whereabouts_sounds` in configuration file to table `party`.
 
-- Changed way of passing user ID and party ID on status updates from
-  URL parameters to JSON payload.
+- Changed way of passing user ID and party ID on status updates from URL
+  parameters to JSON payload.
 
 - Extended details logged on failed status update attempts.
 
@@ -135,22 +133,22 @@
 
 ## 0.4.0 (2023-10-12)
 
-- Replaced full URL API config property `url` with new property
-  `base_url` which leaves out the specific endpoint remainder (which is
-  now hard-coded) to support more endpoints without more configuration.
+- Replaced full URL API config property `url` with new property `base_url`
+  which leaves out the specific endpoint remainder (which is now hard-coded) to
+  support more endpoints without more configuration.
 
-- Changed flow to fetch user data for a tag from the new API endpoint
-  instead of keeping local mapping. This obsoletes the configuration
-  table `tags_to_user_ids`.
+- Changed flow to fetch user data for a tag from the new API endpoint instead
+  of keeping local mapping. This obsoletes the configuration table
+  `tags_to_user_ids`.
 
-- Obtain filename of sound to play for a user from tag details returned
-  by the API. This obsoletes the configuration table `user_sounds`.
+- Obtain filename of sound to play for a user from tag details returned by the
+  API. This obsoletes the configuration table `user_sounds`.
 
-- Included party ID in configuration as it became a mandatory parameter
-  for the endpoint which sets the status.
+- Included party ID in configuration as it became a mandatory parameter for the
+  endpoint which sets the status.
 
-- Switched button mappings to match what some sources report as usual
-  gamepad button order.
+- Switched button mappings to match what some sources report as usual gamepad
+  button order.
 
 - Replaced whereabouts IDs with human-readable whereabouts names in
   configuration and API protocol.
@@ -177,8 +175,8 @@
 
 - Grouped API-related configuration properties.
 
-- Show clarifying error message and exit cleanly if input devices could
-  not be opened.
+- Show clarifying error message and exit cleanly if input devices could not be
+  opened.
 
 - Play sound if user tag is unknown.
 
